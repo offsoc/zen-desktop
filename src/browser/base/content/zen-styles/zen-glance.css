@@ -9,6 +9,12 @@
   visibility: inherit;
 }
 
+#glance-wrapper {
+  position: relative;
+  overflow: visible;
+  left: 2%;
+}
+
 #zen-glance-sidebar-container {
   position: absolute;
   display: flex;
@@ -23,7 +29,6 @@
 
   padding: 5px;
   gap: 12px;
-  left: 2%;
 
   & toolbarbutton {
     width: 32px;
@@ -47,6 +52,10 @@
       filter: invert(1);
     }
   }
+}
+
+#zen-glance-sidebar-container[hidden='true'] {
+  display: none;
 }
 
 .browserSidebarContainer.zen-glance-overlay {
