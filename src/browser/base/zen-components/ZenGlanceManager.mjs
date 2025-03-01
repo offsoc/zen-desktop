@@ -319,7 +319,10 @@
           }
 
           // Final close
-          this.quickCloseGlance({ clearID: false });
+          if (!onTabClose || quikcCloseZen) {
+            this.quickCloseGlance({ clearID: false });
+          }
+
           this.overlay.removeAttribute('fade-out');
           this.browserWrapper.removeAttribute('animate');
 
@@ -359,9 +362,6 @@
           this._animating = false;
           this.closingGlance = false;
 
-          // Hide the buttons globally whenever we close
-          this.hideSidebarButtons();
-
           // If we had another Glance queued, open it
           if (this.#currentGlanceID) {
             this.quickOpenGlance();
@@ -399,6 +399,7 @@
 
     quickCloseGlance({ closeCurrentTab = true, closeParentTab = true, justAnimateParent = false, clearID = true } = {}) {
       const parentHasBrowser = !!this.#currentParentTab.linkedBrowser;
+      this.hideSidebarButtons();
       if (parentHasBrowser) {
         this.#currentParentTab.linkedBrowser.closest('.browserSidebarContainer').classList.remove('zen-glance-background');
       }
