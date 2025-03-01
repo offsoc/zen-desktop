@@ -267,6 +267,7 @@
         index: this.getTabPosition(this.#currentParentTab),
       });
 
+      let quikcCloseZen = false;
       if (onTabClose) {
         // If there's only one tab left, open a new one
         if (gBrowser.tabs.length === 1) {
