@@ -34,6 +34,7 @@
   margin-left: 0 !important;
   position: absolute !important;
   overflow: hidden;
+  transition: inset 0.1s;
 }
 
 #tabbrowser-tabpanels[zen-split-view='true']:not([zen-split-resizing]) > [zen-split-anim='true'] {
@@ -221,15 +222,6 @@
   background-color: var(--zen-colors-secondary);
   align-items: center;
   z-index: 100;
-}
-
-.zen-view-splitter-drag-handle {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
   cursor: move;
 }
 
@@ -245,6 +237,7 @@
   height: 24px;
   cursor: pointer;
   appearance: none;
+  margin-left: auto;
   outline: var(--toolbarbutton-outline);
   list-style-image: url('chrome://global/skin/icons/close-fill.svg') !important;
   &:hover {

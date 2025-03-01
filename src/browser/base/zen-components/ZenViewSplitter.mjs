@@ -69,6 +69,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   _edgeHoverSize;
   minResizeWidth;
 
+  MAX_TABS = 4;
+
   init() {
     XPCOMUtils.defineLazyPreferenceGetter(this, 'canChangeTabOnHover', 'zen.splitView.change-on-hover', false);
     XPCOMUtils.defineLazyPreferenceGetter(this, 'minResizeWidth', 'zen.splitView.min-resize-width', 7);
@@ -565,6 +567,8 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {number} groupIndex - The index of the group to remove.
    */
   removeGroup(groupIndex) {
+    const group = this._data[groupIndex];
+    gZenFolders.expandGroupTabs(group);
     if (this.currentView === groupIndex) {
       this.deactivateCurrentSplitView();
     }
@@ -671,7 +675,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @returns {boolean} True if the tabs can be split, false otherwise.
    */
   contextCanSplitTabs() {
-    if (window.gBrowser.selectedTabs.length < 2) {
+    if (window.gBrowser.selectedTabs.length < 2 || window.gBrowser.selectedTabs.length > this.MAX_TABS) {
       return false;
     }
     for (const tab of window.gBrowser.selectedTabs) {
@@ -704,7 +708,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
    * @param {string} gridType - The type of grid layout.
    */
   splitTabs(tabs, gridType) {
-    if (tabs.length < 2) {
+    const firstisPinned = tabs[0].pinned;
+    tabs = tabs.filter((t) => t.pinned === firstisPinned && !t.hidden && !t.hasAttribute('zen-empty-tab'));
+    if (tabs.length < 2 || tabs.length > this.MAX_TABS) {
       return;
     }
 
@@ -720,9 +726,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         group.layoutTree = this.calculateLayoutTree([...new Set(group.tabs.concat(tabs))], gridType);
       } else {
         // Add any tabs that are not already in the group
-        for (const tab of tabs) {
-          if (!group.tabs.includes(tab)) {
-            group.tabs.push(tab);
+        for (let i = 0; i < tabs.length; i++) {
+          const tab = tabs[i];
+          if (!group.tabs.includes(tab) && tab.pinned === !!group.pinned) {
+            gBrowser.moveTabToGroup(tab, this._getSplitViewGroup(tabs));
             this.addTabToSplit(tab, group.layoutTree);
           }
         }
@@ -872,9 +879,6 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   _createHeader(container) {
     const header = document.createElement('div');
     header.classList.add('zen-view-splitter-header');
-    const dragHandle = document.createElement('div');
-    dragHandle.classList.add('zen-view-splitter-drag-handle');
-    header.appendChild(dragHandle);
     const removeButton = document.createXULElement('toolbarbutton');
     removeButton.classList.add('zen-tab-unsplit-button');
     removeButton.addEventListener('click', () => {
@@ -1301,7 +1305,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         const groupIndex = this._data.findIndex((group) => group.tabs.includes(droppedOnTab));
         const group = this._data[groupIndex];
 
-        if (!group.tabs.includes(draggedTab)) {
+        if (!group.tabs.includes(draggedTab) && group.tabs.length < this.MAX_TABS) {
           // First move the tab to the split view group
           let splitGroup = droppedOnTab.group;
           if (splitGroup && (!draggedTab.group || draggedTab.group !== splitGroup)) {
@@ -1378,9 +1382,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       const group = gBrowser.addTabGroup(tabs, {
         label: '',
         showCreateUI: false,
+        insertBefore: tabs[0],
+        forSplitView: true,
       });
-
-      group.setAttribute('split-view-group', true);
     }
 
     return null;

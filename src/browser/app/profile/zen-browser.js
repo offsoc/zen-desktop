@@ -120,6 +120,7 @@ pref('zen.view.compact.show-sidebar-and-toolbar-on-hover', true);
 pref('zen.urlbar.replace-newtab', true);
 pref('zen.urlbar.behavior', 'floating-on-type'); // default, floating-on-type, float
 pref('zen.urlbar.wait-to-clear', 45000); // in ms (default 45s)
+pref('zen.urlbar.show-domain-only-in-sidebar', true);
 
 #ifdef XP_MACOSX
 // Disable for macos in the meantime until @HarryHeres finds a solution for hight DPI screens
@@ -370,6 +371,14 @@ pref('browser.download.autohideButton', false);
 // Enable transparent background for macos
 #ifdef XP_MACOSX
 pref('widget.macos.titlebar-blend-mode.behind-window', true);
+// 1. hudWindow
+// 2. fullScreenUI
+// 3. popover
+// 4. menu
+// 5. toolTip
+// 6. headerView
+// 7. underlay
+pref('zen.widget.macos.window-material', 7);
 #endif
 
 // Urlbar and autocomplete
