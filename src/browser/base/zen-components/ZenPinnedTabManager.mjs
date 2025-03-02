@@ -94,7 +94,7 @@
       //const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
       //if (pin) {
       //  pin.iconUrl = iconUrl;
-      //  ZenPinnedTabsStorage.savePin(pin);
+      //  this.savePin(pin);
       //}
     }
 
@@ -289,7 +289,7 @@
               container.insertBefore(newTab, container.lastChild);
             }
           } else {
-            document.getElementById('zen-essentials-container').prepend(newTab);
+            document.getElementById('zen-essentials-container').appendChild(newTab);
           }
           gBrowser.tabContainer._invalidateCachedTabs();
           newTab.initialize();
@@ -339,13 +339,13 @@
       tab.position = tab._tPos;
 
       for (let otherTab of gBrowser.tabs) {
-        if (otherTab.pinned && otherTab._tPos > tab.position) {
+        if (otherTab.pinned) {
           const actualPin = this._pinsCache.find((pin) => pin.uuid === otherTab.getAttribute('zen-pin-id'));
           if (!actualPin) {
             continue;
           }
           actualPin.position = otherTab._tPos;
-          await ZenPinnedTabsStorage.savePin(actualPin, false);
+          await this.savePin(actualPin, false);
         }
       }
 
@@ -355,7 +355,8 @@
         return;
       }
       actualPin.position = tab.position;
-      await ZenPinnedTabsStorage.savePin(actualPin);
+      actualPin.isEssential = tab.hasAttribute('zen-essential');
+      await this.savePin(actualPin);
     }
 
     _onTabClick(e) {
@@ -398,7 +399,7 @@
       pin.workspaceUuid = tab.getAttribute('zen-workspace-id');
       pin.userContextId = userContextId ? parseInt(userContextId, 10) : 0;
 
-      await ZenPinnedTabsStorage.savePin(pin);
+      await this.savePin(pin);
       this.resetPinChangedUrl(tab);
       await this._refreshPinnedTabs();
       gZenUIManager.showToast('zen-pinned-tab-replaced');
@@ -421,7 +422,7 @@
         entry = JSON.parse(tab.getAttribute('zen-pinned-entry'));
       }
 
-      await ZenPinnedTabsStorage.savePin({
+      await this.savePin({
         uuid,
         title: entry?.title || tab.label || browser.contentTitle,
         url: entry?.url || browser.currentURI.spec,
@@ -471,6 +472,15 @@
 
       if (cmdClose) {
         cmdClose.addEventListener('command', this._onCloseTabShortcut.bind(this));
+      }
+    }
+
+    async savePin(pin, notifyObservers = true) {
+      await ZenPinnedTabsStorage.savePin(pin, notifyObservers);
+      // Update the cache
+      const existingPin = this._pinsCache.find((p) => p.uuid === pin.uuid);
+      if (existingPin) {
+        Object.assign(existingPin, pin);
       }
     }
 
@@ -604,7 +614,7 @@
           const pin = this._pinsCache.find((pin) => pin.uuid === tab.getAttribute('zen-pin-id'));
           if (pin) {
             pin.isEssential = true;
-            ZenPinnedTabsStorage.savePin(pin);
+            this.savePin(pin);
           }
           document.getElementById('zen-essentials-container').appendChild(tab);
           gBrowser.tabContainer._invalidateCachedTabs();
@@ -622,8 +632,8 @@
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         tab.removeAttribute('zen-essential');
-        if (ZenWorkspaces.workspaceEnabled && ZenWorkspaces.getActiveWorkspaceFromCache.uuid) {
-          tab.setAttribute('zen-workspace-id', ZenWorkspaces.getActiveWorkspaceFromCache.uuid);
+        if (ZenWorkspaces.workspaceEnabled && ZenWorkspaces.getActiveWorkspaceFromCache().uuid) {
+          tab.setAttribute('zen-workspace-id', ZenWorkspaces.getActiveWorkspaceFromCache().uuid);
         }
         if (unpin) {
           gBrowser.unpinTab(tab);
@@ -781,6 +791,7 @@
         return;
       }
       tab.removeAttribute('zen-pinned-changed');
+      tab.removeAttribute('had-zen-pinned-changed');
       tab.style.removeProperty('--zen-original-tab-icon');
     }
 
@@ -788,7 +799,11 @@
       if (tab.hasAttribute('zen-pinned-changed')) {
         return;
       }
-      tab.setAttribute('zen-pinned-changed', 'true');
+      if (tab.group?.hasAttribute('split-view-group')) {
+        tab.setAttribute('had-zen-pinned-changed', 'true');
+      } else {
+        tab.setAttribute('zen-pinned-changed', 'true');
+      }
       tab.style.setProperty('--zen-original-tab-icon', `url(${pin.iconUrl})`);
     }
 
