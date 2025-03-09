@@ -12,6 +12,9 @@ export class ZenGlanceChild extends JSWindowActorChild {
       case 'DOMContentLoaded':
         await this.initiateGlance();
         break;
+      case 'keydown':
+        this.onKeyDown(event);
+        break;
       default:
     }
   }
@@ -119,5 +122,14 @@ export class ZenGlanceChild extends JSWindowActorChild {
 
       this.openGlance(target);
     }
+  }
+
+  onKeyDown(event) {
+    if (event.defaultPrevented || event.key !== 'Escape') {
+      return;
+    }
+    this.sendAsyncMessage('ZenGlance:CloseGlance', {
+      hasFocused: this.contentWindow.document.activeElement !== this.contentWindow.document.body
+    });
   }
 }

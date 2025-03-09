@@ -245,7 +245,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
                 paddingLeft: 0,
               },
           {
-            duration: 0.1,
+            duration: 0.08  ,
             easing: 'ease-out',
           }
         ),
@@ -260,7 +260,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
               : {}),
           },
           {
-            duration: 0.1,
+            duration: 0.08,
             easing: 'ease-out',
           }
         ),
@@ -320,7 +320,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
                 paddingRight: [`${halfWidth}px`, 0],
               },
           {
-            duration: 0.15,
+            duration: 0.1,
             easing: 'ease-out',
           }
         ),
@@ -335,7 +335,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
               : {}),
           },
           {
-            duration: 0.15,
+            duration: 0.1,
             easing: 'ease-out',
           }
         ),
@@ -1550,7 +1550,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     const containerRect = this.fakeBrowser.getBoundingClientRect();
     const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
     const dropTarget = document.elementFromPoint(
-      side == 'left' ? containerRect.left + containerRect.width + padding + 5 : containerRect.left - padding - 5,
+      dropSide == 'left' ? containerRect.left + containerRect.width + padding + 5 : containerRect.left - padding - 5,
       event.clientY
     );
     const browser = dropTarget?.closest('browser');
