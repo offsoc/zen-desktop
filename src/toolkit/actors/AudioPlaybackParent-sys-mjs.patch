@@ -1,0 +1,17 @@
+diff --git a/toolkit/actors/AudioPlaybackParent.sys.mjs b/toolkit/actors/AudioPlaybackParent.sys.mjs
+index db682fd90b2bb5330497d2cf2158ff4cac6bbc47..c3eacff3b2215d29104216dd6086c486a86013e9 100644
+--- a/toolkit/actors/AudioPlaybackParent.sys.mjs
++++ b/toolkit/actors/AudioPlaybackParent.sys.mjs
+@@ -11,9 +11,12 @@ export class AudioPlaybackParent extends JSWindowActorParent {
+   }
+   receiveMessage(aMessage) {
+     const browser = this.browsingContext.top.embedderElement;
++    const mediaController = this.browsingContext.mediaController;
++
+     switch (aMessage.name) {
+       case "AudioPlayback:Start":
+         this._hasAudioPlayback = true;
++        browser.ownerGlobal.gZenMediaController.activateMediaControls(mediaController, browser);
+         browser.audioPlaybackStarted();
+         break;
+       case "AudioPlayback:Stop":

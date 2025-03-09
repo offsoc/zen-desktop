@@ -1150,3 +1150,37 @@ menupopup > menuitem:is([type='checkbox']) .menu-iconic-left {
 #sidebarRevampSeparator {
   display: none !important;
 }
+
+#zen-media-playpause-button {
+  list-style-image: url('media-play.svg') !important;
+}
+
+#zen-media-controls-toolbar.playing #zen-media-playpause-button {
+  list-style-image: url('media-pause.svg') !important;
+}
+
+#zen-media-nexttrack-button {
+  list-style-image: url('media-next.svg') !important;
+}
+
+#zen-media-previoustrack-button {
+  list-style-image: url('media-previous.svg') !important;
+}
+
+#zen-media-controls-toolbar[muted] #zen-media-mute-button {
+  list-style-image: url('media-mute.svg') !important;
+}
+
+#zen-media-mute-button {
+  list-style-image: url('media-unmute.svg') !important;
+}
+
+#zen-media-close-button {
+  list-style-image: url('close.svg') !important;
+}
+
+#zen-media-controls-toolbar:hover  {
+  #zen-media-focus-button {
+    list-style-image: url('screen.svg') !important;
+  }
+}

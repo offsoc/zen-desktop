@@ -49,6 +49,7 @@
         content/browser/zen-styles/zen-rices.css                (content/zen-styles/zen-rices.css)
         content/browser/zen-styles/zen-branding.css             (content/zen-styles/zen-branding.css)
         content/browser/zen-styles/zen-welcome.css              (content/zen-styles/zen-welcome.css)
+        content/browser/zen-styles/zen-media-controls.css       (content/zen-styles/zen-media-controls.css)
 
         content/browser/zen-styles/zen-panels/bookmarks.css     (content/zen-styles/zen-panels/bookmarks.css)
         content/browser/zen-styles/zen-panels/extensions.css    (content/zen-styles/zen-panels/extensions.css)

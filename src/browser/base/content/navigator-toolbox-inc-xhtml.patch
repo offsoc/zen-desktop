@@ -1,5 +1,5 @@
 diff --git a/browser/base/content/navigator-toolbox.inc.xhtml b/browser/base/content/navigator-toolbox.inc.xhtml
-index a0a382643a2f74b6d789f3641ef300eed202d5e9..a962e155f1452362a2a35df89c8f56e1c0d9968c 100644
+index 2a57e254c876589bf64bfbd5df188a2b435d8482..c4aecd9738baed13b8dd5687edc95695b0d5af37 100644
 --- a/browser/base/content/navigator-toolbox.inc.xhtml
 +++ b/browser/base/content/navigator-toolbox.inc.xhtml
 @@ -2,7 +2,7 @@
@@ -73,7 +73,7 @@ index a0a382643a2f74b6d789f3641ef300eed202d5e9..a962e155f1452362a2a35df89c8f56e1
          </tabs>
  
          <toolbarbutton id="new-tab-button"
-@@ -100,11 +108,12 @@
+@@ -100,11 +108,13 @@
  #include private-browsing-indicator.inc.xhtml
      <toolbarbutton id="content-analysis-indicator"
                     class="toolbarbutton-1 content-analysis-indicator-icon"/>
@@ -82,6 +82,7 @@ index a0a382643a2f74b6d789f3641ef300eed202d5e9..a962e155f1452362a2a35df89c8f56e1
  #include titlebar-items.inc.xhtml
 -
 +#endif
++#include zen-media-controller.inc.xhtml
 +#include zen-sidebar-icons.inc.xhtml
    </toolbar>
 -
@@ -89,7 +90,7 @@ index a0a382643a2f74b6d789f3641ef300eed202d5e9..a962e155f1452362a2a35df89c8f56e1
    <toolbar id="nav-bar"
             class="browser-toolbar chromeclass-location"
             data-l10n-id="navbar-accessible"
-@@ -490,10 +499,12 @@
+@@ -490,10 +500,12 @@
                       consumeanchor="PanelUI-button"
                       data-l10n-id="appmenu-menu-button-closed2"/>
      </toolbaritem>
