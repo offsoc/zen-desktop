@@ -187,6 +187,7 @@ pref('zen.sidebar.close-on-blur', true);
 pref('zen.sidebar.max-webpanels', 8);
 
 // Zen Split View
+pref('zen.splitView.enable-tab-drop', true);
 pref('zen.splitView.min-resize-width', 7);
 pref('zen.splitView.change-on-hover', false);
 pref('zen.splitView.rearrange-hover-size', 24);

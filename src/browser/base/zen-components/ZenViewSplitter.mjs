@@ -89,9 +89,11 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     this.insertIntoContextMenu();
 
     // Add drag over listener to the browser view
-    const tabBox = document.getElementById('tabbrowser-tabbox');
-    tabBox.addEventListener('dragover', this.onBrowserDragOverToSplit.bind(this));
-    this.onBrowserDragEndToSplit = this.onBrowserDragEndToSplit.bind(this);
+    if (Services.prefs.getBoolPref('zen.splitView.enable-tab-drop')) {
+      const tabBox = document.getElementById('tabbrowser-tabbox');
+      tabBox.addEventListener('dragover', this.onBrowserDragOverToSplit.bind(this));
+      this.onBrowserDragEndToSplit = this.onBrowserDragEndToSplit.bind(this);
+    }
   }
 
   insertIntoContextMenu() {
