@@ -1,5 +1,5 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index f814772114948f87cbb3c3a7231c95ea1f68d776..f7d1f1f05f33b42be6856fad52ee323751af56ee 100644
+index f814772114948f87cbb3c3a7231c95ea1f68d776..5c65be81c635e2cb457d8975c197d6a22f6f5bc7 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
 @@ -3171,7 +3171,7 @@ var SessionStoreInternal = {
@@ -11,14 +11,14 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..f7d1f1f05f33b42be6856fad52ee3237
        return;
      }
  
-@@ -3881,6 +3881,7 @@ var SessionStoreInternal = {
-         aWindow.gBrowser.selectedTab = newTab;
-       }
+@@ -3876,6 +3876,7 @@ var SessionStoreInternal = {
+         Math.min(tabState.index, tabState.entries.length)
+       );
+       tabState.pinned = false;
++      tabState.zenEssential = undefined;
  
-+      if (aTab.hasAttribute("zenDefaultUserContextId")) newTab.setAttribute("zenDefaultUserContextId", true);
-       // Restore the state into the new tab.
-       this.restoreTab(newTab, tabState, {
-         restoreImmediately: aRestoreImmediately,
+       if (inBackground === false) {
+         aWindow.gBrowser.selectedTab = newTab;
 @@ -5355,14 +5356,14 @@ var SessionStoreInternal = {
      }
  
@@ -45,7 +45,7 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..f7d1f1f05f33b42be6856fad52ee3237
        selectedIndex = 1;
        winData.title = tabbrowser.tabs[0].label;
      }
-@@ -6086,6 +6087,18 @@ var SessionStoreInternal = {
+@@ -6086,6 +6087,21 @@ var SessionStoreInternal = {
  
      // Most of tabData has been restored, now continue with restoring
      // attributes that may trigger external events.
@@ -60,6 +60,9 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..f7d1f1f05f33b42be6856fad52ee3237
 +    }
 +    if (tabData.zenPinnedId) {
 +      tab.setAttribute("zen-pin-id", tabData.zenPinnedId);
++    }
++    if (tabData.zenDefaultUserContextId) {
++      tab.setAttribute("zenDefaultUserContextId", true);
 +    }
  
      if (tabData.pinned) {
