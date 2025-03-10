@@ -6,8 +6,9 @@
     #glances = new Map();
     #currentGlanceID = null;
 
+    #confirmationTimeout = null;
+
     init() {
-      window.addEventListener('keydown', this.onKeyDown.bind(this));
       window.addEventListener('TabClose', this.onTabClose.bind(this));
       window.addEventListener('TabSelect', this.onLocationChange.bind(this));
 
@@ -35,17 +36,6 @@
 
     get #currentParentTab() {
       return this.#glances.get(this.#currentGlanceID)?.parentTab;
-    }
-
-    onKeyDown(event) {
-      if (event.defaultPrevented) {
-        return;
-      }
-      if (event.key === 'Escape' && this.#currentGlanceID) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.closeGlance({ onTabClose: true });
-      }
     }
 
     onOverlayClick(event) {
@@ -216,8 +206,19 @@
       });
     }
 
-    closeGlance({ noAnimation = false, onTabClose = false, setNewID = null, isDifferent = false } = {}) {
+    closeGlance({ noAnimation = false, onTabClose = false, setNewID = null, isDifferent = false, hasFocused = false } = {}) {
       if (this._animating || !this.#currentBrowser || this.animatingOpen || this._duringOpening) {
+        return;
+      }
+
+      console.log(hasFocused)
+      if (onTabClose && hasFocused && !this.#confirmationTimeout) {
+        const cancelButton = document.getElementById('zen-glance-sidebar-close');
+        cancelButton.setAttribute('waitconfirmation', true);
+        this.#confirmationTimeout = setTimeout(() => {
+          cancelButton.removeAttribute('waitconfirmation');
+          this.#confirmationTimeout = null;
+        }, 3000);
         return;
       }
 
@@ -275,7 +276,7 @@
             ...originalPosition,
             opacity: 0,
           },
-          { type: 'spring', bounce: 0, duration: 0.6, easing: 'ease-in' }
+          { type: 'spring', bounce: 0, duration: 0.5, easing: 'ease-in' }
         )
         .then(() => {
           this.browserWrapper.removeAttribute('animate');
@@ -398,9 +399,18 @@
       }
     }
 
-    // note: must be async to avoid timing issues
+    clearConfirmationTimeout() {
+      if (this.#confirmationTimeout) {
+        clearTimeout(this.#confirmationTimeout);
+        this.#confirmationTimeout = null;
+      }
+      document.getElementById('zen-glance-sidebar-close')?.removeAttribute('waitconfirmation');
+    }
+
+    // note: must be sync to avoid timing issues
     onLocationChange(event) {
       const tab = event.target;
+      this.clearConfirmationTimeout();
       if (this.animatingFullOpen || this.closingGlance) {
         return;
       }
@@ -586,8 +596,12 @@
           esModuleURI: 'chrome://browser/content/zen-components/actors/ZenGlanceChild.sys.mjs',
           events: {
             DOMContentLoaded: {},
+            keydown: {
+              capture: true,
+            },
           },
         },
+        allFrames: true,
         matches: ['https://*/*'],
       });
     }

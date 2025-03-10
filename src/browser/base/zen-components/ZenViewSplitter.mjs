@@ -246,7 +246,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
                 paddingLeft: 0,
               },
           {
-            duration: 0.1,
+            duration: 0.08  ,
             easing: 'ease-out',
           }
         ),
@@ -261,7 +261,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
               : {}),
           },
           {
-            duration: 0.1,
+            duration: 0.08,
             easing: 'ease-out',
           }
         ),
@@ -318,7 +318,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
                 paddingRight: [`${halfWidth}px`, 0],
               },
           {
-            duration: 0.15,
+            duration: 0.1,
             easing: 'ease-out',
           }
         ),
@@ -333,7 +333,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
               : {}),
           },
           {
-            duration: 0.15,
+            duration: 0.1,
             easing: 'ease-out',
           }
         ),

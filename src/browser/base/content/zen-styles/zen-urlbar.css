@@ -326,7 +326,7 @@ button.popup-notification-dropmarker {
   background: transparent;
 
   &[notificationside='top'] {
-    position: absolute;
+    position: fixed;
     bottom: calc(var(--zen-element-separation) * 1.5);
     right: calc(var(--zen-element-separation) * 1.5);
     width: fit-content;
