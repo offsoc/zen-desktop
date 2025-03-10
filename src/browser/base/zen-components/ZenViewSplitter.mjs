@@ -246,7 +246,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
                 paddingLeft: 0,
               },
           {
-            duration: 0.08  ,
+            duration: 0.08,
             easing: 'ease-out',
           }
         ),

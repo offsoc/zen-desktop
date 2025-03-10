@@ -129,7 +129,7 @@ export class ZenGlanceChild extends JSWindowActorChild {
       return;
     }
     this.sendAsyncMessage('ZenGlance:CloseGlance', {
-      hasFocused: this.contentWindow.document.activeElement !== this.contentWindow.document.body
+      hasFocused: this.contentWindow.document.activeElement !== this.contentWindow.document.body,
     });
   }
 }
