@@ -884,7 +884,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       return false;
     }
     for (const tab of window.gBrowser.selectedTabs) {
-      if (tab.splitView) {
+      if (tab.splitView || tab.hasAttribute('zen-empty-tab') || tab.hasAttribute('zen-essential')) {
         return false;
       }
     }
