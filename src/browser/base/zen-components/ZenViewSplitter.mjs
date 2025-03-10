@@ -1657,7 +1657,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
   }
 
   handleTabDrop(event, urls, replace, inBackground) {
-    if (!inBackground || replace || urls.length !== 1) {
+    if (replace || urls.length !== 1) {
       return false;
     }
     const url = urls[0];
