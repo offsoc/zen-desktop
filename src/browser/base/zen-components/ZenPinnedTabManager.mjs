@@ -466,6 +466,7 @@
 
       if (!isClosing) {
         tab.removeAttribute('zen-pin-id');
+        tab.removeAttribute('zen-essential'); // Just in case
 
         if (!tab.hasAttribute('zen-workspace-id') && ZenWorkspaces.workspaceEnabled) {
           const workspace = await ZenWorkspaces.getActiveWorkspace();
