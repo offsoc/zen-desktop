@@ -211,7 +211,6 @@
         return;
       }
 
-      console.log(hasFocused);
       if (onTabClose && hasFocused && !this.#confirmationTimeout) {
         const cancelButton = document.getElementById('zen-glance-sidebar-close');
         cancelButton.setAttribute('waitconfirmation', true);
