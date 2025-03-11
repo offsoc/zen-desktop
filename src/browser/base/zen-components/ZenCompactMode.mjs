@@ -39,7 +39,7 @@ var gZenCompactModeManager = {
     this.addContextMenu();
 
     // Clear hover states when window state changes (minimize, maximize, etc.)
-    window.addEventListener("sizemodechange", () => this._clearAllHoverStates());
+    window.addEventListener('sizemodechange', () => this._clearAllHoverStates());
   },
 
   get preference() {
