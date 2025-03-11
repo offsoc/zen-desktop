@@ -458,7 +458,7 @@ var gZenCompactModeManager = {
     // Clear hover attributes from all hoverable elements
     for (let entry of this.hoverableElements) {
       const target = entry.element;
-      if (target) {
+      if (target && !target.matches(':hover') && target.hasAttribute('zen-has-hover')) {
         target.removeAttribute('zen-has-hover');
         this.clearFlashTimeout('has-hover' + target.id);
       }
