@@ -1,7 +1,7 @@
 #zen-media-controls-toolbar {
   --progress-height: 5px;
   --button-spacing: 2px;
-  
+
   display: flex;
   justify-content: space-between;
   min-width: 0;
@@ -20,11 +20,11 @@
   #zen-media-next-button {
     margin: 0;
   }
-  
+
   image.toolbarbutton-icon {
     padding: 5px;
     width: 26px;
-    height: 26px;   
+    height: 26px;
   }
 
   #zen-media-progress-bar {
@@ -71,7 +71,9 @@
     width: 34px;
     height: 26px;
     align-self: center;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
 
     @container (max-width: 185px) {
       width: 0;
@@ -99,9 +101,10 @@
     opacity: 0;
     overflow: hidden;
     transform: translateY(5px);
-    transition: max-height 0.35s ease-in-out, 
-                opacity 0.25s ease-in-out,
-                transform 0.3s ease-in-out;
+    transition:
+      max-height 0.35s ease-in-out,
+      opacity 0.25s ease-in-out,
+      transform 0.3s ease-in-out;
   }
 
   #zen-media-current-time,
@@ -111,8 +114,14 @@
 }
 
 @keyframes zen-media-controls-show {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 #zen-media-controls-toolbar {
