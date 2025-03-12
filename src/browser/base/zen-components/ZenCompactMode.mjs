@@ -37,6 +37,9 @@ var gZenCompactModeManager = {
 
     this.addMouseActions();
     this.addContextMenu();
+
+    // Clear hover states when window state changes (minimize, maximize, etc.)
+    window.addEventListener('sizemodechange', () => this._clearAllHoverStates());
   },
 
   get preference() {
@@ -449,5 +452,16 @@ var gZenCompactModeManager = {
   toggleToolbar() {
     let toolbar = document.getElementById('zen-appcontent-navbar-container');
     toolbar.toggleAttribute('zen-user-show');
+  },
+
+  _clearAllHoverStates() {
+    // Clear hover attributes from all hoverable elements
+    for (let entry of this.hoverableElements) {
+      const target = entry.element;
+      if (target && !target.matches(':hover') && target.hasAttribute('zen-has-hover')) {
+        target.removeAttribute('zen-has-hover');
+        this.clearFlashTimeout('has-hover' + target.id);
+      }
+    }
   },
 };

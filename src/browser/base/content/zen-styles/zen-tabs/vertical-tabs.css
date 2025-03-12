@@ -870,6 +870,7 @@
     pointer-events: none;
     width: 16px;
     height: 16px;
+    border-radius: 4px;
   }
 
   &::after {
