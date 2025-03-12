@@ -16,6 +16,10 @@
   --urlbarView-highlight-background: var(--toolbarbutton-hover-background);
   border-radius: var(--toolbarbutton-border-radius);
   padding: 1px;
+
+  :root:not([zen-single-toolbar='true']) &[zen-floating-urlbar='true'] {
+    --urlbar-container-padding: 2px !important;
+  }
 }
 
 .urlbar-input::placeholder {
@@ -90,6 +94,12 @@
   justify-content: center !important;
   align-items: center !important;
   margin: 0;
+
+  :root[zen-single-toolbar='true'] & {
+    padding: 6px !important;
+    width: unset !important;
+    height: unset !important;
+  }
 }
 
 #tracking-protection-icon-container {
@@ -451,6 +461,12 @@ button.popup-notification-dropmarker {
   #urlbar-container:has(&) {
     border-radius: 10px;
     background: var(--toolbarbutton-hover-background);
+  }
+}
+
+@media not (-moz-bool-pref: 'zen.urlbar.show-protections-icon') {
+  #tracking-protection-icon-container {
+    display: none !important;
   }
 }
 
