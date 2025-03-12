@@ -27,7 +27,6 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
     this.onlySafeWidthAndHeight();
 
     this.initProgressListener();
-    this.update();
     this.close(); // avoid caching
     this.tabBox.prepend(this.sidebarWrapper);
     this.listenForPrefChanges();
