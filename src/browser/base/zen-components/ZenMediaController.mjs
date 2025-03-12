@@ -12,6 +12,7 @@ class ZenMediaController {
   mediaCurrentTime = null;
   mediaDuration = null;
   mediaFocusButton = null;
+  mediaProgressBarContainer = null;
 
   supportedKeys = ['playpause', 'previoustrack', 'nexttrack'];
 
@@ -25,6 +26,7 @@ class ZenMediaController {
     this.mediaCurrentTime = document.querySelector('#zen-media-current-time');
     this.mediaDuration = document.querySelector('#zen-media-duration');
     this.mediaFocusButton = document.querySelector('#zen-media-focus-button');
+    this.mediaProgressBarContainer = document.querySelector('#zen-media-progress-hbox');
   }
 
   /**
@@ -150,13 +152,16 @@ class ZenMediaController {
    * Updates the media progress bar and time display.
    */
   updateMediaPosition() {
+    if (this._currentDuration >= 900_000) return this.mediaProgressBarContainer.setAttribute('hidden', 'true');
+    else this.mediaProgressBarContainer.removeAttribute('hidden', 'true');
+
     if (this._mediaUpdateInterval) {
       clearInterval(this._mediaUpdateInterval);
       this._mediaUpdateInterval = null;
     }
 
-    this.mediaCurrentTime.textContent = this.formatSecondsToMinutes(this._currentPosition);
-    this.mediaDuration.textContent = this.formatSecondsToMinutes(this._currentDuration);
+    this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
+    this.mediaDuration.textContent = this.formatSecondsToTime(this._currentDuration);
     this.mediaProgressBar.value = (this._currentPosition / this._currentDuration) * 100;
 
     if (this._currentMediaController?.isPlaying) {
@@ -166,7 +171,7 @@ class ZenMediaController {
           if (this._currentPosition > this._currentDuration) {
             this._currentPosition = this._currentDuration;
           }
-          this.mediaCurrentTime.textContent = this.formatSecondsToMinutes(this._currentPosition);
+          this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
           this.mediaProgressBar.value = (this._currentPosition / this._currentDuration) * 100;
         } else {
           clearInterval(this._mediaUpdateInterval);
@@ -177,15 +182,23 @@ class ZenMediaController {
   }
 
   /**
-   * Formats seconds into a minutes:seconds string.
+   * Formats seconds into a hours:minutes:seconds string.
    * @param {number} seconds - The time in seconds.
    * @returns {string} Formatted time string.
    */
-  formatSecondsToMinutes(seconds) {
-    const totalSeconds = Math.ceil(seconds);
-    const minutes = Math.floor(totalSeconds / 60);
-    const remainingSeconds = totalSeconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  formatSecondsToTime(seconds) {
+    if (!seconds || isNaN(seconds)) return '0:00';
+
+    const totalSeconds = Math.max(0, Math.ceil(seconds));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60).toString();
+    const secs = (totalSeconds % 60).toString();
+
+    if (hours > 0) {
+      return `${hours}:${minutes.padStart(2, '0')}:${secs.padStart(2, '0')}`;
+    }
+
+    return `${minutes}:${secs.padStart(2, '0')}`;
   }
 
   /**
@@ -213,7 +226,7 @@ class ZenMediaController {
   onMediaSeekDrag(event) {
     this._currentMediaController?.pause();
     const newTime = (event.target.value / 100) * this._currentDuration;
-    this.mediaCurrentTime.textContent = this.formatSecondsToMinutes(newTime);
+    this.mediaCurrentTime.textContent = this.formatSecondsToTime(newTime);
   }
 
   onMediaSeekComplete(event) {
