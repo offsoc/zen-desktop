@@ -36,6 +36,10 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._resolveInitialized = resolve;
   });
 
+  promiseEmptyTabInitialized = new Promise((resolve) => {
+    this._resolveEmptyTabInitialized = resolve;
+  });
+
   workspaceIndicatorXUL = `
     <hbox class="zen-current-workspace-indicator-icon"></hbox>
     <hbox class="zen-current-workspace-indicator-name"></hbox>
@@ -603,16 +607,19 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       } catch (e) {
         console.error('ZenWorkspaces: Error initializing theme picker', e);
       }
-      this._selectStartPage();
+      await this._selectStartPage();
       this._fixTabPositions();
       this._resolveInitialized();
       this._clearAnyZombieTabs(); // Dont call with await
     }
   }
 
-  _selectStartPage() {
+  async _selectStartPage() {
     const currentTab = gBrowser.selectedTab;
     let showed = false;
+    await this.promiseEmptyTabInitialized;
+    this._resolveEmptyTabInitialized = null;
+    this.promiseEmptyTabInitialized = null;
     if (currentTab.pinned) {
       this.selectEmptyTab();
       try {
