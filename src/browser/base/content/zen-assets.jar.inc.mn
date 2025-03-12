@@ -25,6 +25,7 @@
         content/browser/zen-components/ZenRices.mjs             (zen-components/ZenRices.mjs)
         content/browser/zen-components/ZenEmojies.mjs           (zen-components/ZenEmojies.mjs)
         content/browser/zen-components/ZenWelcome.mjs           (zen-components/ZenWelcome.mjs)
+        content/browser/zen-components/ZenMediaController.mjs   (zen-components/ZenMediaController.mjs)
 
         content/browser/zen-styles/zen-theme.css                (content/zen-styles/zen-theme.css)
         content/browser/zen-styles/zen-buttons.css              (content/zen-styles/zen-buttons.css)
