@@ -152,13 +152,13 @@ class ZenMediaController {
    * Updates the media progress bar and time display.
    */
   updateMediaPosition() {
-    if (this._currentDuration >= 900_000) return this.mediaProgressBarContainer.setAttribute('hidden', 'true');
-    else this.mediaProgressBarContainer.removeAttribute('hidden', 'true');
-
     if (this._mediaUpdateInterval) {
       clearInterval(this._mediaUpdateInterval);
       this._mediaUpdateInterval = null;
     }
+
+    if (this._currentDuration >= 900_000) return this.mediaProgressBarContainer.setAttribute('hidden', 'true');
+    else this.mediaProgressBarContainer.removeAttribute('hidden');
 
     this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
     this.mediaDuration.textContent = this.formatSecondsToTime(this._currentDuration);
