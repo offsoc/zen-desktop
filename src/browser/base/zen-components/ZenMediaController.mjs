@@ -27,6 +27,18 @@ class ZenMediaController {
     this.mediaDuration = document.querySelector('#zen-media-duration');
     this.mediaFocusButton = document.querySelector('#zen-media-focus-button');
     this.mediaProgressBarContainer = document.querySelector('#zen-media-progress-hbox');
+
+    window.addEventListener('TabSelect', (event) => {
+      if (this._currentBrowser) {
+        if (event.target.linkedBrowser.browserId === this._currentBrowser.browserId) {
+          this.mediaControlBar.setAttribute('hidden', 'true');
+        } else {
+          this.mediaControlBar.removeAttribute('hidden');
+        }
+
+        gZenUIManager.updateTabsToolbar();
+      }
+    });
   }
 
   /**
@@ -78,7 +90,6 @@ class ZenMediaController {
     this.mediaServiceIcon.src = this._currentBrowser.mIconURL;
     this.mediaFocusButton.style.listStyleImage = `url(${this._currentBrowser.mIconURL})`;
 
-    this.mediaControlBar.removeAttribute('hidden');
     this.mediaTitle.textContent = metadata.title || '';
     this.mediaArtist.textContent = metadata.artist || '';
 
@@ -99,19 +110,20 @@ class ZenMediaController {
    * @param {Object} browser - The browser associated with the media controller.
    */
   activateMediaControls(mediaController, browser) {
+    this.updateMuteState();
+
     if (this._currentBrowser?.browserId === browser.browserId) return;
-    else this._currentBrowser = browser;
+    else {
+      this.deinitMediaController(this._currentMediaController);
+      this._currentMediaController = mediaController;
+      this._currentBrowser = browser;
+    }
 
     mediaController.onpositionstatechange = this.onPositionstateChange.bind(this);
     mediaController.onplaybackstatechange = this.onPlaybackstateChange.bind(this);
     mediaController.onsupportedkeyschange = this.onSupportedKeysChange.bind(this);
     mediaController.onmetadatachange = this.onMetadataChange.bind(this);
     mediaController.ondeactivated = this.onDeactivated.bind(this);
-
-    if (this._currentMediaController === mediaController) return;
-    else this.deinitMediaController(this._currentMediaController);
-
-    this._currentMediaController = mediaController;
 
     const metadata = mediaController.getMetadata();
     const positionState = mediaController.getPositionState();
@@ -267,6 +279,15 @@ class ZenMediaController {
       this._currentMediaController?.pause();
     } else {
       this._currentMediaController?.play();
+    }
+  }
+
+  updateMuteState() {
+    if (!this._currentBrowser) return;
+    if (this._currentBrowser._audioMuted) {
+      this.mediaControlBar.setAttribute('muted', '');
+    } else {
+      this.mediaControlBar.removeAttribute('muted');
     }
   }
 }
