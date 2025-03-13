@@ -53,6 +53,8 @@ class ZenMediaController {
     this.mediaControlBar.setAttribute('hidden', 'true');
     this.mediaControlBar.removeAttribute('muted');
     this.mediaControlBar.classList.remove('playing');
+
+    gZenUIManager.updateTabsToolbar();
   }
 
   /**
@@ -65,13 +67,22 @@ class ZenMediaController {
       this.mediaControlBar.classList.add('playing');
     }
 
-    this.mediaServiceTitle.textContent = this._currentBrowser._originalURI.displayHost;
+    // Have it displayed as e.g. <white>youtube</white><grey>.com</grey>
+    let host = this._currentBrowser._originalURI.displayHost;
+    if (host.startsWith('www.')) host = host.slice(4);
+    // note: we might have subdomains, so we need to split the host
+    const [service, ...tld] = host.split('.');
+    this.mediaServiceTitle.querySelector('.service').textContent = service;
+    this.mediaServiceTitle.querySelector('.tld').textContent = '.' + tld.join('.');
+
     this.mediaServiceIcon.src = this._currentBrowser.mIconURL;
     this.mediaFocusButton.style.listStyleImage = `url(${this._currentBrowser.mIconURL})`;
 
     this.mediaControlBar.removeAttribute('hidden');
     this.mediaTitle.textContent = metadata.title || '';
     this.mediaArtist.textContent = metadata.artist || '';
+
+    gZenUIManager.updateTabsToolbar();
 
     this._currentPosition = positionState.position;
     this._currentDuration = positionState.duration;
