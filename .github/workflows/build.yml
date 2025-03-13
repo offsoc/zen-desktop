@@ -516,31 +516,15 @@ jobs:
           commit_user_email: zen-browser-auto@users.noreply.github.com
           repository: ./updates-server
 
-      - name: Build release README
-        run: |
-          echo "# Zen Stable Release" > README.md
-          echo "This is the stable release of Zen Browser." >> README.md
-          echo "## Sha256 checksums" >> README.md
-          echo "```" >> README.md
-          sha256sum ./zen.source.tar.zst/* >> README.md
-          sha256sum ./zen.linux-x86_64.tar.xz/* >> README.md
-          sha256sum ./zen.linux-aarch64.tar.xz/* >> README.md
-          sha256sum ./zen-x86_64.AppImage/* >> README.md
-          sha256sum ./zen-x86_64.AppImage.zsync/* >> README.md
-          sha256sum ./zen-aarch64.AppImage/* >> README.md
-          sha256sum ./zen-aarch64.AppImage.zsync/* >> README.md
-          sha256sum ./linux-aarch64.mar/* >> README.md
-          sha256sum ./.github/workflows/object/windows-x64-signed-x86_64/zen.installer.exe >> README.md
-          sha256sum ./.github/workflows/object/windows-x64-signed-arm64/zen.installer-arm64.exe >> README.md
-          sha256sum ./zen.macos-universal.dmg/* >> README.md
-          echo "```" >> README.md
+      - name: Generate Release Notes
+        run: bash .github/workflows/src/generate_release_notes.sh
 
         # If we are on Twilight, we want to just update the Twilight tag's release
       - name: Update Twilight tag
         if: ${{ inputs.update_branch == 'twilight' }}
         uses: softprops/action-gh-release@v2
         with:
-          body_path: README.md
+          body_path: release_notes.md
           files: |
             ./zen.source.tar.zst/*
             ./zen.linux-x86_64.tar.xz/*
@@ -579,7 +563,7 @@ jobs:
           fail_on_unmatched_files: false
           generate_release_notes: false
           name: 'Release build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }})'
-          body_path: README.md
+          body_path: release_notes.md
           files: |
             ./zen.source.tar.zst/*
             ./zen.linux-x86_64.tar.xz/*
