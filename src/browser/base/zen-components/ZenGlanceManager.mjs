@@ -211,6 +211,11 @@
         return;
       }
 
+      let { permitUnload } = this.#currentBrowser.permitUnload();
+      if (!permitUnload) {
+        return;
+      }
+
       if (onTabClose && hasFocused && !this.#confirmationTimeout) {
         const cancelButton = document.getElementById('zen-glance-sidebar-close');
         cancelButton.setAttribute('waitconfirmation', true);
@@ -300,7 +305,6 @@
           }
 
           // reset everything
-          const prevOverlay = this.overlay;
           this.browserWrapper = null;
           this.overlay = null;
           this.contentWrapper = null;
@@ -312,7 +316,7 @@
             gBrowser.selectedTab = this.#currentParentTab;
           }
           this._ignoreClose = true;
-          gBrowser.removeTab(this.lastCurrentTab, { animate: true });
+          gBrowser.removeTab(this.lastCurrentTab, { animate: true, skipPermitUnload: true });
           gBrowser.tabContainer._invalidateCachedTabs();
 
           this.#currentParentTab.removeAttribute('glance-id');

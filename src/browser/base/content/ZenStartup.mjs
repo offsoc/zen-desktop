@@ -48,6 +48,7 @@
 
     openWatermark() {
       if (!Services.prefs.getBoolPref('zen.watermark.enabled', false)) {
+        document.documentElement.removeAttribute('zen-before-loaded');
         return;
       }
       for (let elem of document.querySelectorAll('#browser > *, #urlbar')) {
