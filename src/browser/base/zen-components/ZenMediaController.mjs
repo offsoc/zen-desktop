@@ -99,7 +99,8 @@ class ZenMediaController {
    * @param {Object} browser - The browser associated with the media controller.
    */
   activateMediaControls(mediaController, browser) {
-    if (this._currentBrowser) this.updateMuteState();
+    this.updateMuteState();
+
     if (this._currentBrowser?.browserId === browser.browserId) return;
     else {
       this.deinitMediaController(this._currentMediaController);
@@ -271,6 +272,7 @@ class ZenMediaController {
   }
 
   updateMuteState() {
+    if (!this._currentBrowser) return;
     if (this._currentBrowser._audioMuted) {
       this.mediaControlBar.setAttribute('muted', '');
     } else {
