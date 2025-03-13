@@ -186,6 +186,7 @@ pref('zen.sidebar.data', "{\"data\":\n {\"p1\":{\n   \"url\":\"https://www.wikip
 pref('zen.sidebar.enabled', true);
 pref('zen.sidebar.close-on-blur', true);
 pref('zen.sidebar.max-webpanels', 8);
+pref('zen.sidebar.use-google-favicons', true);
 
 // Zen Split View
 pref('zen.splitView.enable-tab-drop', true);

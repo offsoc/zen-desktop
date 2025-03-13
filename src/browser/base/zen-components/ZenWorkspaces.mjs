@@ -149,6 +149,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   _initializeEmptyTab() {
+    if (Services.prefs.getBoolPref('zen.workspaces.disable_empty_state_for_testing', false)) {
+      return;
+    }
     this._emptyTab = gBrowser.addTrustedTab('about:blank', { inBackground: true, userContextId: 0, _forZenEmptyTab: true });
   }
 
@@ -615,6 +618,9 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   }
 
   async _selectStartPage() {
+    if (Services.prefs.getBoolPref('zen.workspaces.disable_empty_state_for_testing', false)) {
+      return;
+    }
     const currentTab = gBrowser.selectedTab;
     let showed = false;
     await this.promiseEmptyTabInitialized;
