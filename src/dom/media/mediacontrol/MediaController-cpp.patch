@@ -1,0 +1,30 @@
+diff --git a/dom/media/mediacontrol/MediaController.cpp b/dom/media/mediacontrol/MediaController.cpp
+index 3f08d24d4ed56bb72ed513ed602b2c8fa48afe7b..690d9abdb0ab8efc019dd606743b82504834faa0 100644
+--- a/dom/media/mediacontrol/MediaController.cpp
++++ b/dom/media/mediacontrol/MediaController.cpp
+@@ -51,6 +51,25 @@ void MediaController::GetSupportedKeys(
+   }
+ }
+ 
++void MediaController::GetPositionState(MediaControllerPositionState& aPositionState, ErrorResult& aRv) {
++  if (!IsActive() || mShutdown) {
++    LOG("Cannot get position state: controller is inactive or shut down");
++    aRv.Throw(NS_ERROR_NOT_AVAILABLE);
++    return;
++  }
++
++  Maybe<PositionState> currentPositionState = GetCurrentPositionState();
++  if (!currentPositionState) {
++    LOG("No position state available for controller %" PRId64, Id());
++    aRv.Throw(NS_ERROR_NOT_AVAILABLE);
++    return;
++  }
++
++  aPositionState.mDuration = currentPositionState->mDuration;
++  aPositionState.mPosition = currentPositionState->mLastReportedPlaybackPosition;
++  aPositionState.mPlaybackRate = currentPositionState->mPlaybackRate;
++}
++
+ void MediaController::GetMetadata(MediaMetadataInit& aMetadata,
+                                   ErrorResult& aRv) {
+   if (!IsActive() || mShutdown) {

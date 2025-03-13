@@ -37,6 +37,8 @@ var gZenUIManager = {
 
     window.addEventListener('TabClose', this.onTabClose.bind(this));
     this.tabsWrapper.addEventListener('scroll', this.saveScrollbarState.bind(this));
+
+    gZenMediaController.init();
   },
 
   updateTabsToolbar() {

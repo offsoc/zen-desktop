@@ -1,0 +1,12 @@
+diff --git a/dom/html/HTMLMediaElement.cpp b/dom/html/HTMLMediaElement.cpp
+index 0b8dee1ca22b1f0ddcf7e6a976f606990104b56e..a3a5a7cfcaa8a4719e56988bc917183fa3cc9d10 100644
+--- a/dom/html/HTMLMediaElement.cpp
++++ b/dom/html/HTMLMediaElement.cpp
+@@ -455,6 +455,7 @@ class HTMLMediaElement::MediaControlKeyListener final
+     // audible state. Therefore, in that case we would noitfy the audible state
+     // when media starts playing.
+     if (mState == MediaPlaybackState::ePlayed) {
++      NotifyMediaPositionState();
+       NotifyAudibleStateChanged(mIsOwnerAudible
+                                     ? MediaAudibleState::eAudible
+                                     : MediaAudibleState::eInaudible);
