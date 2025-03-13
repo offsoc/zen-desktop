@@ -27,6 +27,16 @@ class ZenMediaController {
     this.mediaDuration = document.querySelector('#zen-media-duration');
     this.mediaFocusButton = document.querySelector('#zen-media-focus-button');
     this.mediaProgressBarContainer = document.querySelector('#zen-media-progress-hbox');
+
+    window.addEventListener('TabSelect', (event) => {
+      if (this._currentBrowser) {
+        if (event.target.linkedBrowser.browserId === this._currentBrowser.browserId) {
+          this.mediaControlBar.setAttribute('hidden', 'true');
+        } else {
+          this.mediaControlBar.removeAttribute('hidden');
+        }
+      }
+    });
   }
 
   /**
@@ -78,7 +88,6 @@ class ZenMediaController {
     this.mediaServiceIcon.src = this._currentBrowser.mIconURL;
     this.mediaFocusButton.style.listStyleImage = `url(${this._currentBrowser.mIconURL})`;
 
-    this.mediaControlBar.removeAttribute('hidden');
     this.mediaTitle.textContent = metadata.title || '';
     this.mediaArtist.textContent = metadata.artist || '';
 
