@@ -35,6 +35,8 @@ class ZenMediaController {
         } else {
           this.mediaControlBar.removeAttribute('hidden');
         }
+
+        gZenUIManager.updateTabsToolbar();
       }
     });
   }
