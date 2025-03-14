@@ -1174,7 +1174,7 @@
     }
 
     & .titlebar-buttonbox-container {
-      margin-left: calc(-1 * var(--zen-toolbox-max-width)) !important;
+      margin-left: calc(-1 * var(--zen-toolbox-max-width) + var(--zen-toolbox-padding) / 2) !important;
     }
 
     & #zen-appcontent-wrapper {
