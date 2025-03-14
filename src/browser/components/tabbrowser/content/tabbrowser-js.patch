@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 628aa6596627c85efe361fc1ece8fd58f7ee653e..cd3ad53dbe399383178d0eff459ad72079b02024 100644
+index 628aa6596627c85efe361fc1ece8fd58f7ee653e..f8a96152feea39b55c9b9cd14dff991bacb7b545 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -412,11 +412,50 @@
@@ -578,6 +578,15 @@ index 628aa6596627c85efe361fc1ece8fd58f7ee653e..cd3ad53dbe399383178d0eff459ad720
        if (aIndex < numPinned || (aTab.pinned && aIndex == numPinned)) {
          params.pinned = true;
        }
+@@ -6513,7 +6661,7 @@
+             // preventDefault(). It will still raise the window if appropriate.
+             break;
+           }
+-          this.selectedTab = tab;
++          ZenWorkspaces.switchTabIfNeeded(tab);
+           window.focus();
+           aEvent.preventDefault();
+           break;
 @@ -7415,6 +7563,7 @@
              aWebProgress.isTopLevel
            ) {

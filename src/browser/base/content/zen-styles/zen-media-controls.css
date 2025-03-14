@@ -1,5 +1,5 @@
 #zen-media-controls-toolbar {
-  --progress-height: 5px;
+  --progress-height: 4px;
   --button-spacing: 2px;
 
   display: flex;
@@ -50,8 +50,8 @@
     &::-moz-range-thumb {
       background: var(--zen-primary-color);
       border: none;
-      width: 14px;
-      height: 14px;
+      width: calc(var(--progress-height) * 2.5);
+      height:calc(var(--progress-height) * 2.5);
       border-radius: 50%;
       cursor: pointer;
     }
@@ -84,7 +84,7 @@
     top: -50%;
     left: 50%;
     transform: translateX(-50%);
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
   }
 
@@ -93,21 +93,7 @@
     transition:
       opacity 0.2s ease,
       transform 0.2s ease;
-
-    @container (max-width: 185px) {
-      width: 0;
-      height: 0;
-      opacity: 0;
-      padding: 0;
-      margin-right: -10%;
-      transform: translateX(-20px);
-      transition: margin 0.15s ease-in-out;
-    }
-
-    @container (min-width: 185px) {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    position: relative;
   }
 
   toolbaritem {
@@ -119,7 +105,7 @@
     bottom: 0;
     padding: 4px;
     border-radius: var(--border-radius-medium);
-    background: light-dark(rgb(255, 255, 255), rgb(11, 11, 11)) !important;
+    background: light-dark(rgb(255, 255, 255), rgb(7, 7, 7)) !important;
     width: 100%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   }
@@ -127,13 +113,13 @@
   .show-on-hover {
     max-height: 0;
     opacity: 0;
-    transform: translateY(5px);
+    transform: translateY(10px);
     padding: 0 6px;
     transition:
-      max-height 0.15s ease-in-out,
-      opacity 0.15s ease-in-out,
-      transform 0.1s ease-in-out,
-      padding 0.1s ease-in-out;
+      max-height 0.2s ease-out,
+      opacity 0.2s ease-out,
+      transform 0.2s ease-out,
+      padding 0.2s ease-out;
   }
 
   #zen-media-current-time,
@@ -190,11 +176,13 @@
 }
 
 #zen-media-info-vbox {
+  transition-delay: 0.01s;
   & label {
     width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    min-height: 16px;
   }
 }
 
@@ -210,6 +198,7 @@
   flex-grow: 1;
   height: 1.1rem;
   align-items: center;
+  padding-top: 0px;
 }
 
 #zen-media-controls-hbox {

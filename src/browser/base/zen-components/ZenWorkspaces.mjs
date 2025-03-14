@@ -2373,9 +2373,12 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   async switchIfNeeded(browser, i) {
     const tab = gBrowser.getTabForBrowser(browser);
-    const workspaceId = tab.getAttribute('zen-workspace-id');
-    if (!tab.hasAttribute('zen-essential') && workspaceId !== this.activeWorkspace) {
-      await this.changeWorkspace({ uuid: workspaceId });
+    await this.switchTabIfNeeded(tab);
+  }
+
+  async switchTabIfNeeded(tab) {
+    if (!tab.hasAttribute('zen-essential') && tab.getAttribute('zen-workspace-id') !== this.activeWorkspace) {
+      await this.changeWorkspace({ uuid: tab.getAttribute('zen-workspace-id') });
     }
     gBrowser.selectedTab = tab;
   }
