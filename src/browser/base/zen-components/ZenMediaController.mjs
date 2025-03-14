@@ -6,8 +6,6 @@ class ZenMediaController {
   mediaTitle = null;
   mediaArtist = null;
   mediaControlBar = null;
-  mediaServiceIcon = null;
-  mediaServiceTitle = null;
   mediaProgressBar = null;
   mediaCurrentTime = null;
   mediaDuration = null;
@@ -20,8 +18,6 @@ class ZenMediaController {
     this.mediaTitle = document.querySelector('#zen-media-title');
     this.mediaArtist = document.querySelector('#zen-media-artist');
     this.mediaControlBar = document.querySelector('#zen-media-controls-toolbar');
-    this.mediaServiceIcon = document.querySelector('#zen-media-service-button > image');
-    this.mediaServiceTitle = document.querySelector('#zen-media-service-title');
     this.mediaProgressBar = document.querySelector('#zen-media-progress-bar');
     this.mediaCurrentTime = document.querySelector('#zen-media-current-time');
     this.mediaDuration = document.querySelector('#zen-media-duration');
@@ -106,15 +102,6 @@ class ZenMediaController {
       this.mediaControlBar.classList.add('playing');
     }
 
-    // Have it displayed as e.g. <white>youtube</white><grey>.com</grey>
-    let host = this._currentBrowser._originalURI.displayHost;
-    if (host.startsWith('www.')) host = host.slice(4);
-    // note: we might have subdomains, so we need to split the host
-    const [service, ...tld] = host.split('.');
-    this.mediaServiceTitle.querySelector('.service').textContent = service;
-    this.mediaServiceTitle.querySelector('.tld').textContent = '.' + tld.join('.');
-
-    this.mediaServiceIcon.src = this._currentBrowser.mIconURL;
     this.mediaFocusButton.style.listStyleImage = `url(${this._currentBrowser.mIconURL})`;
 
     this.mediaTitle.textContent = metadata.title || '';
