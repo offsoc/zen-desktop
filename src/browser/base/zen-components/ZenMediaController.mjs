@@ -24,6 +24,12 @@ class ZenMediaController {
     this.mediaFocusButton = document.querySelector('#zen-media-focus-button');
     this.mediaProgressBarContainer = document.querySelector('#zen-media-progress-hbox');
 
+    this.onPositionstateChange = this._onPositionstateChange.bind(this);
+    this.onPlaybackstateChange = this._onPlaybackstateChange.bind(this);
+    this.onSupportedKeysChange = this._onSupportedKeysChange.bind(this);
+    this.onMetadataChange = this._onMetadataChange.bind(this);
+    this.onDeactivated = this._onDeactivated.bind(this);
+
     window.addEventListener('TabSelect', (event) => {
       if (this._currentBrowser) {
         if (event.target.linkedBrowser.browserId === this._currentBrowser.browserId) {
@@ -71,11 +77,11 @@ class ZenMediaController {
   deinitMediaController(mediaController) {
     if (!mediaController) return;
 
-    mediaController.onpositionstatechange = null;
-    mediaController.onplaybackstatechange = null;
-    mediaController.onsupportedkeyschange = null;
-    mediaController.onmetadatachange = null;
-    mediaController.ondeactivated = null;
+    mediaController.removeEventListener('positionstatechange', this.onPositionstateChange);
+    mediaController.removeEventListener('playbackstatechange', this.onPlaybackstateChange);
+    mediaController.removeEventListener('supportedkeyschange', this.onSupportedKeysChange);
+    mediaController.removeEventListener('metadatachange', this.onMetadataChange);
+    mediaController.removeEventListener('deactivated', this.onDeactivated);
 
     this._currentMediaController = null;
     this._currentBrowser = null;
@@ -85,11 +91,17 @@ class ZenMediaController {
       this._mediaUpdateInterval = null;
     }
 
-    this.mediaControlBar.setAttribute('hidden', 'true');
+    gZenUIManager.motion
+      .animate(this.mediaControlBar, {
+        opacity: [1, 0],
+        y: [0, 10],
+      })
+      .then(() => {
+        this.mediaControlBar.setAttribute('hidden', 'true');
+        gZenUIManager.updateTabsToolbar();
+      });
     this.mediaControlBar.removeAttribute('muted');
     this.mediaControlBar.classList.remove('playing');
-
-    gZenUIManager.updateTabsToolbar();
   }
 
   /**
@@ -133,11 +145,11 @@ class ZenMediaController {
       this._currentBrowser = browser;
     }
 
-    mediaController.onpositionstatechange = this.onPositionstateChange.bind(this);
-    mediaController.onplaybackstatechange = this.onPlaybackstateChange.bind(this);
-    mediaController.onsupportedkeyschange = this.onSupportedKeysChange.bind(this);
-    mediaController.onmetadatachange = this.onMetadataChange.bind(this);
-    mediaController.ondeactivated = this.onDeactivated.bind(this);
+    mediaController.addEventListener('positionstatechange', this.onPositionstateChange);
+    mediaController.addEventListener('playbackstatechange', this.onPlaybackstateChange);
+    mediaController.addEventListener('supportedkeyschange', this.onSupportedKeysChange);
+    mediaController.addEventListener('metadatachange', this.onMetadataChange);
+    mediaController.addEventListener('deactivated', this.onDeactivated);
 
     const metadata = mediaController.getMetadata();
     const positionState = mediaController.getPositionState();
@@ -148,7 +160,7 @@ class ZenMediaController {
   /**
    * @param {Event} event - The deactivation event.
    */
-  onDeactivated(event) {
+  _onDeactivated(event) {
     if (event.target === this._currentMediaController) {
       this.deinitMediaController(event.target);
     }
@@ -158,7 +170,7 @@ class ZenMediaController {
    * Updates playback state and UI based on changes.
    * @param {Event} event - The playback state change event.
    */
-  onPlaybackstateChange(event) {
+  _onPlaybackstateChange(event) {
     this.mediaControlBar.classList.toggle('playing', event.target.isPlaying);
   }
 
@@ -166,7 +178,7 @@ class ZenMediaController {
    * Updates supported keys in the UI.
    * @param {Event} event - The supported keys change event.
    */
-  onSupportedKeysChange(event) {
+  _onSupportedKeysChange(event) {
     for (const key of this.supportedKeys) {
       const button = this.mediaControlBar.querySelector(`#zen-media-${key}-button`);
       button.disabled = !event.target.supportedKeys.includes(key);
@@ -177,7 +189,7 @@ class ZenMediaController {
    * Updates position state and UI when the media position changes.
    * @param {Event} event - The position state change event.
    */
-  onPositionstateChange(event) {
+  _onPositionstateChange(event) {
     if (event.target !== this._currentMediaController) return;
 
     this._currentPosition = event.position;
@@ -242,7 +254,7 @@ class ZenMediaController {
    * Updates metadata in the UI.
    * @param {Event} event - The metadata change event.
    */
-  onMetadataChange(event) {
+  _onMetadataChange(event) {
     const metadata = event.target.getMetadata();
     this.mediaTitle.textContent = metadata.title || '';
     this.mediaArtist.textContent = metadata.artist || '';

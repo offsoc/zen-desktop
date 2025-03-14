@@ -51,7 +51,7 @@
       background: var(--zen-primary-color);
       border: none;
       width: calc(var(--progress-height) * 2.5);
-      height:calc(var(--progress-height) * 2.5);
+      height: calc(var(--progress-height) * 2.5);
       border-radius: 50%;
       cursor: pointer;
     }
@@ -66,10 +66,11 @@
     .show-on-hover {
       max-height: 50px;
       padding: 2px 6px;
-      padding-top: 4px;
+      padding-top: 6px;
       margin-bottom: 0;
       opacity: 1;
       transform: translateY(0);
+      pointer-events: auto;
     }
   }
 
@@ -115,6 +116,7 @@
     opacity: 0;
     transform: translateY(10px);
     padding: 0 6px;
+    pointer-events: none;
     transition:
       max-height 0.2s ease-out,
       opacity 0.2s ease-out,
@@ -198,7 +200,7 @@
   flex-grow: 1;
   height: 1.1rem;
   align-items: center;
-  padding-top: 0px;
+  padding-top: 0px !important;
 }
 
 #zen-media-controls-hbox {
