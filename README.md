@@ -96,16 +96,18 @@ brew install --cask zen-browser
 yay -S zen-browser-bin
 ```
 
-##### Other Linux distributions (AppImage with automated system integration)
+##### Other Linux distributions (Tarball or AppImage)
 
-- `native` tarball install:
-  `bash <(curl -s https://updates.zen-browser.app/install.sh)`
-
-- `zsync` is required for the Update feature of the script below
+- `Tarball` install:
+```sh
+bash <(curl -s https://updates.zen-browser.app/install.sh)`
+```
+- `AppImage` install:
 
 ```sh
 bash <(curl https://updates.zen-browser.app/appimage.sh)
 ```
+> AppImage install requires `zsync` for the Update feature
 
 - Again, if you don't see your OS listed above, that's because we already have it in our [downloads page](https://zen-browser.app/download)! 🔄
 
