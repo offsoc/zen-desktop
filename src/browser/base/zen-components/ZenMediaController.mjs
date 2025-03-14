@@ -31,12 +31,39 @@ class ZenMediaController {
     window.addEventListener('TabSelect', (event) => {
       if (this._currentBrowser) {
         if (event.target.linkedBrowser.browserId === this._currentBrowser.browserId) {
-          this.mediaControlBar.setAttribute('hidden', 'true');
-        } else {
+          gZenUIManager.motion
+            .animate(this.mediaControlBar, {
+              opacity: [1, 0],
+              y: [0, 10],
+            })
+            .then(() => {
+              this.mediaControlBar.setAttribute('hidden', 'true');
+            });
+        } else if (this.mediaControlBar.hasAttribute('hidden')) {
           this.mediaControlBar.removeAttribute('hidden');
+          window.requestAnimationFrame(() => {
+            this.mediaControlBar.style.height =
+              this.mediaControlBar.querySelector('toolbaritem').getBoundingClientRect().height + 'px';
+            gZenUIManager.motion.animate(
+              this.mediaControlBar,
+              {
+                opacity: [0, 1],
+                y: [10, 0],
+              },
+              {}
+            );
+          });
         }
 
         gZenUIManager.updateTabsToolbar();
+      }
+    });
+
+    window.addEventListener('TabClose', (event) => {
+      if (this._currentBrowser) {
+        if (event.target.linkedBrowser.browserId === this._currentBrowser.browserId) {
+          this.deinitMediaController(this._currentMediaController);
+        }
       }
     });
   }
