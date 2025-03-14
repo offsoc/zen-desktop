@@ -28,7 +28,7 @@
 
 ## 🖥️ Compatibility
 
-Zen is currently built using Firefox version `135.0.1`! 🚀
+Zen is currently built using Firefox version `136.0.1`! 🚀
 
 - [`Zen Twilight`](https://zen-browser.app/download?twilight) - Is currently built using Firefox version `RC 136.0`!
 - Check out the latest [release notes](https://zen-browser.app/release-notes)!
@@ -44,7 +44,7 @@ We keep track of how many issues are closed at the end of the month in [docs/iss
 
 ### Versioning
 
-Zen uses [Semantic Versioning](https://semver.org/), meaning versions are displayed as `a.bc.d` where:
+Zen uses [Semantic Versioning](https://semver.org/), meaning versions are displayed as `a.b.cd` where:
 
 - `a` is the major version
 - `b` is the minor version

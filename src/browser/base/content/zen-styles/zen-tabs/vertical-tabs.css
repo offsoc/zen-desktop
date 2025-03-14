@@ -94,9 +94,8 @@
     padding: 6px !important;
   }
 
-  & #urlbar-container,
-  & #urlbar {
-    --urlbar-container-height: 40px;
+  & #urlbar-container[breakout='true']:has([zen-floating-urlbar='true']) {
+    --urlbar-container-height: 36px !important;
     --urlbar-height: 38px !important;
   }
 
@@ -109,7 +108,7 @@
   }
 
   & #zen-sidebar-top-buttons {
-    margin: 4px 0;
+    margin: var(--zen-element-separation) 0 calc(var(--zen-toolbox-padding) / 2) 0;
   }
 
   & #PanelUI-menu-button {
@@ -264,7 +263,7 @@
       display: none;
     }
 
-    &:active {
+    #tabbrowser-tabs:not([movingtab]) &:active {
       scale: var(--zen-active-tab-scale);
     }
 
@@ -374,6 +373,12 @@
   overflow-y: auto;
   height: 100%;
   scrollbar-width: thin;
+
+  /* Only do this hack if we have workspaces enabled */
+  :root[zen-workspace-id] & {
+    margin-left: calc(-1 * var(--zen-toolbox-padding));
+    width: calc(100% + var(--zen-toolbox-padding) * 2);
+  }
 }
 
 #zen-browser-tabs-container {
@@ -440,7 +445,7 @@
     padding-right: 0;
 
     :root[zen-single-toolbar='true'] & {
-      & #urlbar:not([breakout-extend='true']) .urlbar-input-container {
+      & #urlbar:not([breakout-extend='true']):not([pageproxystate='invalid']) .urlbar-input-container {
         padding-left: 8px;
         padding-right: 4px;
       }
@@ -865,6 +870,7 @@
     pointer-events: none;
     width: 16px;
     height: 16px;
+    border-radius: 4px;
   }
 
   &::after {
@@ -1050,7 +1056,7 @@
   overflow: hidden;
   transition: max-height 0.3s ease-out;
   opacity: 1;
-  grid-template-columns: repeat(auto-fit, minmax(var(--tab-pinned-min-width-expanded), auto));
+  grid-template-columns: repeat(auto-fit, minmax(48px, auto));
   overflow: hidden;
   scrollbar-width: thin;
   display: grid;
@@ -1102,7 +1108,7 @@
       &::after {
         content: "";
         inset: -50%;
-        filter: blur(15px);
+        filter: blur(15px) brightness(1.2);
         position: absolute;
         background-size: 100% 100%;
         background-clip: padding-box;
@@ -1168,7 +1174,7 @@
     }
 
     & .titlebar-buttonbox-container {
-      margin-left: calc(-1 * var(--zen-toolbox-max-width)) !important;
+      margin-left: calc(-1 * var(--zen-toolbox-max-width) + var(--zen-toolbox-padding) / 2) !important;
     }
 
     & #zen-appcontent-wrapper {
@@ -1261,5 +1267,9 @@
 .zen-workspace-tabs-section {
   position: absolute;
   transform: translateX(-100%);
-  min-width: 100%;
+  min-width: calc(100% - var(--zen-toolbox-padding) * 2);
+
+  &:not(.zen-current-workspace-indicator) {
+    margin: 0 var(--zen-toolbox-padding);
+  }
 }

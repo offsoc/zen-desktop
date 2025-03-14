@@ -211,8 +211,9 @@
           continue;
         }
 
-        if (pin.title && pin.editedTitle) {
-          gBrowser._setTabLabel(tab, pin.title);
+        if (pin.title && (pin.editedTitle || tab.hasAttribute('zen-has-static-label'))) {
+          tab.removeAttribute('zen-has-static-label'); // So we can set it again
+          gBrowser._setTabLabel(tab, pin.title, { beforeTabOpen: true });
           tab.setAttribute('zen-has-static-label', 'true');
         }
       }
@@ -339,7 +340,7 @@
       tab.position = tab._tPos;
 
       for (let otherTab of gBrowser.tabs) {
-        if (otherTab.pinned) {
+        if (otherTab.pinned && otherTab.getAttribute('zen-pin-id') !== tab.getAttribute('zen-pin-id')) {
           const actualPin = this._pinsCache.find((pin) => pin.uuid === otherTab.getAttribute('zen-pin-id'));
           if (!actualPin) {
             continue;
@@ -356,6 +357,13 @@
       }
       actualPin.position = tab.position;
       actualPin.isEssential = tab.hasAttribute('zen-essential');
+
+      // There was a bug where the title and hasStaticLabel attribute were not being set
+      // This is a workaround to fix that
+      if (tab.hasAttribute('zen-has-static-label')) {
+        actualPin.editedTitle = true;
+        actualPin.title = tab.label;
+      }
       await this.savePin(actualPin);
     }
 
@@ -458,6 +466,7 @@
 
       if (!isClosing) {
         tab.removeAttribute('zen-pin-id');
+        tab.removeAttribute('zen-essential'); // Just in case
 
         if (!tab.hasAttribute('zen-workspace-id') && ZenWorkspaces.workspaceEnabled) {
           const workspace = await ZenWorkspaces.getActiveWorkspace();
@@ -600,7 +609,14 @@
     }
 
     addToEssentials(tab) {
-      const tabs = tab ? [tab] : TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
+      const tabs = tab
+        ? // if it's already an array, dont make it [tab]
+          tab?.length
+          ? tab
+          : [tab]
+        : TabContextMenu.contextTab.multiselected
+          ? gBrowser.selectedTabs
+          : [TabContextMenu.contextTab];
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         if (tab.hasAttribute('zen-essential')) {
@@ -621,8 +637,8 @@
         } else {
           gBrowser.pinTab(tab);
         }
-        this.onTabIconChanged(tab);
         this._onTabMove(tab);
+        this.onTabIconChanged(tab);
       }
       gZenUIManager.updateTabsToolbar();
     }
@@ -701,72 +717,77 @@
     }
 
     moveToAnotherTabContainerIfNecessary(event, movingTabs) {
-      const pinnedTabsTarget =
-        event.target.closest('#vertical-pinned-tabs-container') || event.target.closest('.zen-current-workspace-indicator');
-      const essentialTabsTarget = event.target.closest('#zen-essentials-container');
-      const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
+      try {
+        const pinnedTabsTarget =
+          event.target.closest('#vertical-pinned-tabs-container') || event.target.closest('.zen-current-workspace-indicator');
+        const essentialTabsTarget = event.target.closest('#zen-essentials-container');
+        const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
 
-      let isVertical = this.expandedSidebarMode;
-      let moved = false;
-      for (const draggedTab of movingTabs) {
-        let isRegularTabs = false;
-        // Check for pinned tabs container
-        if (pinnedTabsTarget) {
-          if (!draggedTab.pinned) {
-            gBrowser.pinTab(draggedTab);
-            moved = true;
-          } else if (draggedTab.hasAttribute('zen-essential')) {
-            this.removeEssentials(draggedTab, false);
-            moved = true;
-          }
-        }
-        // Check for essentials container
-        else if (essentialTabsTarget) {
-          if (!draggedTab.hasAttribute('zen-essential')) {
-            this.addToEssentials(draggedTab);
-            moved = true;
-            isVertical = false;
-          }
-        }
-        // Check for normal tabs container
-        else if (tabsTarget || event.target.id === 'zen-tabs-wrapper') {
-          if (draggedTab.pinned && !draggedTab.hasAttribute('zen-essential')) {
-            gBrowser.unpinTab(draggedTab);
-            moved = true;
-            isRegularTabs = true;
-          } else if (draggedTab.hasAttribute('zen-essential')) {
-            this.removeEssentials(draggedTab);
-            moved = true;
-            isRegularTabs = true;
-          }
-        }
-
-        // If the tab was moved, adjust its position relative to the target tab
-        if (moved) {
-          const targetTab = event.target.closest('.tabbrowser-tab');
-          if (targetTab) {
-            const rect = targetTab.getBoundingClientRect();
-            let newIndex = targetTab._tPos;
-
-            if (isVertical) {
-              const middleY = targetTab.screenY + rect.height / 2;
-              if (!isRegularTabs && event.screenY > middleY) {
-                newIndex++;
-              } else if (isRegularTabs && event.screenY < middleY) {
-                newIndex--;
-              }
-            } else {
-              const middleX = targetTab.screenX + rect.width / 2;
-              if (event.screenX > middleX) {
-                newIndex++;
-              }
+        let isVertical = this.expandedSidebarMode;
+        let moved = false;
+        for (const draggedTab of movingTabs) {
+          let isRegularTabs = false;
+          // Check for pinned tabs container
+          if (pinnedTabsTarget) {
+            if (!draggedTab.pinned) {
+              gBrowser.pinTab(draggedTab);
+              moved = true;
+            } else if (draggedTab.hasAttribute('zen-essential')) {
+              this.removeEssentials(draggedTab, false);
+              moved = true;
             }
-            gBrowser.moveTabTo(draggedTab, newIndex);
+          }
+          // Check for essentials container
+          else if (essentialTabsTarget) {
+            if (!draggedTab.hasAttribute('zen-essential') && !draggedTab?.group?.hasAttribute('split-view-group')) {
+              this.addToEssentials(draggedTab);
+              moved = true;
+              isVertical = false;
+            }
+          }
+          // Check for normal tabs container
+          else if (tabsTarget || event.target.id === 'zen-tabs-wrapper') {
+            if (draggedTab.pinned && !draggedTab.hasAttribute('zen-essential')) {
+              gBrowser.unpinTab(draggedTab);
+              moved = true;
+              isRegularTabs = true;
+            } else if (draggedTab.hasAttribute('zen-essential')) {
+              this.removeEssentials(draggedTab);
+              moved = true;
+              isRegularTabs = true;
+            }
+          }
+
+          // If the tab was moved, adjust its position relative to the target tab
+          if (moved) {
+            const targetTab = event.target.closest('.tabbrowser-tab');
+            if (targetTab) {
+              const rect = targetTab.getBoundingClientRect();
+              let newIndex = targetTab._tPos;
+
+              if (isVertical) {
+                const middleY = targetTab.screenY + rect.height / 2;
+                if (!isRegularTabs && event.screenY > middleY) {
+                  newIndex++;
+                } else if (isRegularTabs && event.screenY < middleY) {
+                  newIndex--;
+                }
+              } else {
+                const middleX = targetTab.screenX + rect.width / 2;
+                if (event.screenX > middleX) {
+                  newIndex++;
+                }
+              }
+              gBrowser.moveTabTo(draggedTab, newIndex);
+            }
           }
         }
-      }
 
-      return moved;
+        return moved;
+      } catch (ex) {
+        console.error('Error moving tabs:', ex);
+        return false;
+      }
     }
 
     async onLocationChange(browser) {
@@ -837,6 +858,15 @@
       // update the label for the same pin across all windows
       for (const browser of browsers) {
         const tabs = browser.gBrowser.tabs;
+        // Fix pinned cache for the browser
+        const browserCache = browser.gZenPinnedTabManager?._pinsCache;
+        if (browserCache) {
+          const pin = browserCache.find((pin) => pin.uuid === uuid);
+          if (pin) {
+            pin.title = newTitle;
+            pin.editedTitle = isEdited;
+          }
+        }
         for (let i = 0; i < tabs.length; i++) {
           const tabToEdit = tabs[i];
           if (tabToEdit.getAttribute('zen-pin-id') === uuid && tabToEdit !== tab) {

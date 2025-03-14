@@ -27,7 +27,6 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
     this.onlySafeWidthAndHeight();
 
     this.initProgressListener();
-    this.update();
     this.close(); // avoid caching
     this.tabBox.prepend(this.sidebarWrapper);
     this.listenForPrefChanges();
@@ -102,7 +101,7 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
   syncPinnedState() {
     const sidebar = document.getElementById('zen-sidebar-web-panel');
     const pinButton = document.getElementById('zen-sidebar-web-panel-pinned');
-    
+
     if (sidebar.hasAttribute('pinned')) {
       pinButton.setAttribute('pinned', 'true');
     } else {
@@ -182,8 +181,8 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
     const leftMouseOffset = startLeft - mouseDownEvent.screenX;
     const moveListener = (mouseMoveEvent) => {
       window.requestAnimationFrame(() => {
-        let top = mouseMoveEvent.screenY + topMouseOffset;
-        let left = mouseMoveEvent.screenX + leftMouseOffset;
+        let top = mouseMoveEvent.clientY + topMouseOffset;
+        let left = mouseMoveEvent.clientX + leftMouseOffset;
 
         const wrapperBounds = this.sidebarWrapper.getBoundingClientRect();
         top = Math.max(0, Math.min(top, wrapperBounds.height - sideBarHeight));
@@ -557,16 +556,18 @@ class ZenBrowserManagerSidebar extends ZenDOMOperatedFeature {
   _getWebPanelIcon(url, element) {
     let { preferredURI } = Services.uriFixup.getFixupURIInfo(url);
     element.setAttribute('image', `page-icon:${preferredURI.spec}`);
-    fetch(`https://s2.googleusercontent.com/s2/favicons?domain_url=${preferredURI.spec}`).then(async (response) => {
-      if (response.ok) {
-        let blob = await response.blob();
-        let reader = new FileReader();
-        reader.onload = function () {
-          element.setAttribute('image', reader.result);
-        };
-        reader.readAsDataURL(blob);
-      }
-    });
+    if (Services.prefs.getBoolPref('zen.sidebar.use-google-favicons')) {
+      fetch(`https://s2.googleusercontent.com/s2/favicons?domain_url=${preferredURI.spec}`).then(async (response) => {
+        if (response.ok) {
+          let blob = await response.blob();
+          let reader = new FileReader();
+          reader.onload = function () {
+            element.setAttribute('image', reader.result);
+          };
+          reader.readAsDataURL(blob);
+        }
+      });
+    }
   }
 
   _getBrowserById(id) {

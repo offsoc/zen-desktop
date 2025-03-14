@@ -38,6 +38,9 @@
       --zen-toolbox-max-width: 64px !important;
       --zen-compact-float: var(--zen-element-separation);
 
+      /* Initial padding for when we are animating */
+      padding: 0 0 0 var(--zen-toolbox-padding) !important;
+
       &:not([animate='true']) {
         position: absolute;
         z-index: 10;
@@ -51,7 +54,12 @@
         opacity: 0;
 
         :root[zen-single-toolbar='true'] & {
-          top: var(--zen-element-separation);
+          top: calc(var(--zen-element-separation) / 2);
+          height: calc(100% - var(--zen-element-separation));
+        }
+
+        & #zen-sidebar-top-buttons {
+          margin: 0 0 calc(var(--zen-toolbox-padding) / 2) 0;
         }
       }
 
@@ -61,7 +69,7 @@
     }
 
     &:not([zen-right-side='true']) #navigator-toolbox {
-      left: calc(-1 * var(--zen-sidebar-width) + 1px);
+      left: calc(-1 * var(--actual-zen-sidebar-width) + 1px);
     }
 
     /* When we have multiple toolbars and the top-toolbar is NOT being hidden,
@@ -78,7 +86,7 @@
         --zen-compact-float: calc(var(--zen-element-separation) + 1px);
 
         &:not([animate='true']) {
-          right: calc(-1 * var(--zen-sidebar-width) + 1px);
+          right: calc(-1 * var(--actual-zen-sidebar-width) + 1px);
         }
       }
 
@@ -90,12 +98,21 @@
 
     #navigator-toolbox:not([animate='true']) #titlebar {
       box-shadow: var(--zen-big-shadow);
-      border-radius: var(--zen-native-inner-radius);
+      border-radius: calc(var(--zen-native-inner-radius) + var(--zen-element-separation) / 4);
       padding: var(--zen-toolbox-padding) !important;
       position: relative;
       background: var(--zen-dialog-background);
       border: 1px solid var(--zen-colors-border-contrast);
-      width: calc(100% - var(--zen-toolbox-padding));
+      /* times 4 because we have the inner padding and the outter padding to consider */
+      :root[zen-sidebar-expanded='true'] & {
+        &[has-animated-padding='true'] {
+          width: calc(var(--zen-sidebar-width) + var(--zen-toolbox-padding));
+        }
+
+        &:not([has-animated-padding='true']) {
+          width: calc(var(--zen-sidebar-width) - var(--zen-toolbox-padding));
+        }
+      }
 
       :root[zen-single-toolbar='true'] {
         padding-top: 0 !important;
@@ -113,6 +130,7 @@
 
       & #urlbar[open][zen-floating-urlbar='true'] {
         transition: left 0.05s ease;
+        visibility: visible;
 
         #navigator-toolbox:has(&) {
           opacity: 1;
@@ -134,17 +152,18 @@
       }
     }
 
-    #navigator-toolbox[zen-has-hover],
+    #navigator-toolbox[zen-has-hover]:not(:has(#urlbar[zen-floating-urlbar='true']:hover)),
     #navigator-toolbox[zen-user-show],
+    #navigator-toolbox[zen-has-empty-tab],
     #navigator-toolbox[flash-popup],
     #navigator-toolbox[has-popup-menu],
     #navigator-toolbox[movingtab],
     #navigator-toolbox:has(.tabbrowser-tab:active),
     &[zen-renaming-tab='true'] #navigator-toolbox,
     #navigator-toolbox:has(
-        *:is([panelopen='true'], [open='true'], #urlbar:not([zen-floating-urlbar='true']):focus-within):not(tab):not(.zen-compact-mode-ignore)
+        *:is([panelopen='true'], [open='true'], #urlbar:focus-within):not(#urlbar[zen-floating-urlbar='true']):not(tab):not(.zen-compact-mode-ignore)
       ) {
-      &:not([animate='true']):not(:has(#urlbar[zen-floating-urlbar='true']:hover)) {
+      &:not([animate='true']) {
         --zen-compact-mode-func: linear(
           0 0%,
           0.002748 1%,
@@ -249,14 +268,14 @@
           1.003423 100%
         );
         transition:
-          left 0.3s var(--zen-compact-mode-func),
-          right 0.3s var(--zen-compact-mode-func);
+          left 0.25s var(--zen-compact-mode-func),
+          right 0.25s var(--zen-compact-mode-func);
         opacity: 1;
 
         &:not([supress-primary-adjustment='true']) {
-          left: -1px;
+          left: calc(var(--zen-element-separation) / -2);
           :root[zen-right-side='true'] & {
-            right: -1px;
+            right: calc(var(--zen-element-separation) / -2);
             left: auto;
           }
         }

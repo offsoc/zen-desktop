@@ -81,7 +81,7 @@ pref('zen.tabs.vertical', true);
 pref('zen.tabs.vertical.right-side', false);
 pref('zen.tabs.rename-tabs', true);
 pref('zen.theme.accent-color', "#ffb787");
-pref('zen.theme.content-element-separation', 6); // In pixels
+pref('zen.theme.content-element-separation', 8); // In pixels
 pref('zen.theme.gradient', true);
 pref('zen.theme.gradient.show-custom-colors', false);
 pref('zen.theme.essentials-favicon-bg', true);
@@ -118,9 +118,11 @@ pref('zen.view.compact.animate-sidebar', true);
 pref('zen.view.compact.show-sidebar-and-toolbar-on-hover', true);
 
 pref('zen.urlbar.replace-newtab', true);
+pref('zen.urlbar.show-protections-icon', false);
 pref('zen.urlbar.behavior', 'floating-on-type'); // default, floating-on-type, float
 pref('zen.urlbar.wait-to-clear', 45000); // in ms (default 45s)
 pref('zen.urlbar.show-domain-only-in-sidebar', true);
+pref('zen.urlbar.hide-one-offs', true);
 
 #ifdef XP_MACOSX
 // Disable for macos in the meantime until @HarryHeres finds a solution for hight DPI screens
@@ -177,15 +179,17 @@ pref('zen.pinned-tab-manager.restore-pinned-tabs-to-pinned-url', false);
 pref('zen.pinned-tab-manager.close-shortcut-behavior', 'reset-unload-switch');
 
 // TODO: Check this out!
-pref("browser.profiles.enabled", true);
+pref("browser.profiles.enabled", false);
 
 // Zen webpanels (calling it sidebar due to legacy reasons)
 pref('zen.sidebar.data', "{\"data\":\n {\"p1\":{\n   \"url\":\"https://www.wikipedia.org/\"\n  },\n\"p2\":{\n   \"url\":\"https://m.twitter.com/\",\n\"ua\": true\n  },\n\"p3\": {\n   \"url\": \"https://www.youtube.com/\",\n\"ua\": true\n},\n\"p4\": {\n   \"url\": \"https://translate.google.com/\",\n\"ua\": true\n},\n\"p5\": {\n   \"url\": \"https://todoist.com/\",\n\"ua\": true\n}},\n\"index\":[\"p1\",\"p2\",\"p3\",\"p4\",\"p5\"]}");
 pref('zen.sidebar.enabled', true);
 pref('zen.sidebar.close-on-blur', true);
 pref('zen.sidebar.max-webpanels', 8);
+pref('zen.sidebar.use-google-favicons', true);
 
 // Zen Split View
+pref('zen.splitView.enable-tab-drop', true);
 pref('zen.splitView.min-resize-width', 7);
 pref('zen.splitView.change-on-hover', false);
 pref('zen.splitView.rearrange-hover-size', 24);
@@ -197,7 +201,6 @@ pref('zen.startup.smooth-scroll-in-tabs', true);
 pref('zen.workspaces.disabled_for_testing', false);
 pref('zen.workspaces.hide-deactivated-workspaces', false);
 pref('zen.workspaces.hide-default-container-indicator', true);
-pref('zen.workspaces.individual-pinned-tabs', true);
 pref('zen.workspaces.show-icon-strip', true);
 pref('zen.workspaces.force-container-workspace', false);
 pref('zen.workspaces.open-new-tab-if-last-unpinned-tab-is-closed', false);
@@ -378,7 +381,7 @@ pref('widget.macos.titlebar-blend-mode.behind-window', true);
 // 5. toolTip
 // 6. headerView
 // 7. underlay
-pref('zen.widget.macos.window-material', 7);
+pref('zen.widget.macos.window-material', 3);
 #endif
 
 // Urlbar and autocomplete
@@ -436,6 +439,13 @@ pref("browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons", false);
 pref("browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features", false);
 pref("browser.preferences.moreFromMozilla", false, locked);
 pref("browser.aboutwelcome.enabled", false);
+
+// AI/ML stuff
+pref("browser.ml.chat.enabled", false);
+pref("browser.ml.chat.shortcuts", false);
+pref("browser.ml.chat.shortcuts.custom", false);
+pref("browser.ml.chat.sidebar", false);
+pref("browser.ml.enable", false);
 
 // ---- Experimental settings to try make zen faster
 pref("gfx.canvas.accelerated.cache-items", 32768);

@@ -176,7 +176,7 @@
                   <checkbox data-l10n-id="zen-rice-share-include-workspace-themes" id="zen-rice-share-include-workspace-themes" />
                 </vbox>
                 <html:moz-button-group class="panel-footer">
-                  <button onclick="gZenThemePicker.riceManager.cancel()" class="footer-button" data-l10n-id="zen-rice-share-cancel" />
+                  <button onclick="gZenThemePicker.riceManager.cancel()" class="footer-button" data-l10n-id="zen-general-cancel" />
                   <button onclick="gZenThemePicker.riceManager.submit()" class="footer-button" data-l10n-id="zen-rice-share-save" default="true" slot="primary" id="zen-rice-share-save" disabled="true" />
                 </html:moz-button-group>
               </vbox>

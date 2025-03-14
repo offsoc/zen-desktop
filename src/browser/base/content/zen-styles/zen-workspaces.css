@@ -9,6 +9,7 @@
   justify-content: center;
   align-items: center;
   display: flex;
+  font-size: x-small;
 
   position: relative;
 
@@ -451,6 +452,7 @@
 
 /* Mark workspaces indicator */
 #zen-current-workspace-indicator-container {
+  position: relative;
   margin-bottom: var(--zen-workspace-indicator-height);
 }
 
@@ -464,6 +466,7 @@
   align-items: center;
   flex-direction: row !important;
   max-width: 100%;
+  width: 100%;
 
   &::before {
     border-radius: var(--border-radius-medium);
@@ -488,6 +491,7 @@
 
   & .zen-current-workspace-indicator-icon {
     font-size: 12px;
+    line-height: 1;
   }
 
   .zen-current-workspace-indicator-name {
@@ -497,6 +501,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     pointer-events: none;
+    font-size: small;
   }
 }
 

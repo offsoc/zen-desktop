@@ -226,6 +226,7 @@
       const sidebar = document.getElementById('zen-welcome-page-sidebar');
       sidebar.style.width = '100%';
       sidebar.appendChild(heart);
+      sidebar.setAttribute('animate-heart', 'true');
       await animate(
         '#zen-welcome-heart',
         { opacity: [0, 1, 1, 1, 0], scale: [0.5, 1, 1.2, 1, 1.2] },
@@ -334,17 +335,17 @@
                   <html:div></html:div>
                 </hbox>
                 <html:div id="zen-welcome-initial-essentials-browser-sidebar-essentials">
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://web.whatsapp.com" style="--zen-tab-icon: url('https://web.whatsapp.com/favicon.ico');">
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://web.whatsapp.com" style="--zen-tab-icon: url('https://web.whatsapp.com/favicon.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://discord.com" style="--zen-tab-icon: url('http://www.google.com/s2/favicons?domain=discord.com');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://discord.com" style="--zen-tab-icon: url('https://www.google.com/s2/favicons?domain=discord.com');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" data-url="https://reddit.com" style="--zen-tab-icon: url('https://www.redditstatic.com/desktop2x/img/favicon/favicon-96x96.png');">
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://trello.com" style="--zen-tab-icon: url('https://trello.com/favicon.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
@@ -354,7 +355,7 @@
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://google.com" style="--zen-tab-icon: url('https://www.google.com/s2/favicons?domain=google.com');">
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://github.com" style="--zen-tab-icon: url('https://github.githubassets.com/favicons/favicon-dark.png');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
@@ -364,17 +365,17 @@
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" data-url="https://notion.com" style="--zen-tab-icon: url('https://www.notion.so/front-static/favicon.ico');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://notion.com" style="--zen-tab-icon: url('https://www.notion.so/front-static/favicon.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" data-url="https://instagram.com" style="--zen-tab-icon: url('https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png');">
+                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://calendar.google.com" style="--zen-tab-icon: url('https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_6.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
                   </html:div>
-                  <html:div class="tabbrowser-tab" fadein="" visuallyselected="" data-url="https://element.io" style="--zen-tab-icon: url('http://www.google.com/s2/favicons?domain=element.io');">
+                  <html:div class="tabbrowser-tab" fadein="" data-url="https://youtube.com" style="--zen-tab-icon: url('https://www.youtube.com/favicon.ico');">
                     <stack class="tab-stack">
                       <html:div class="tab-background"></html:div>
                     </stack>
@@ -453,9 +454,7 @@
         async fadeOut() {
           gZenThemePicker.panel.removeAttribute('noautohide');
           gZenThemePicker.panel.removeAttribute('consumeoutsideclicks');
-          if (AppConstants.platform != 'macosx') {
-            await animate(gZenThemePicker.panel, { opacity: [1, 0] });
-          }
+          await animate(gZenThemePicker.panel, { opacity: [1, 0] });
           gZenThemePicker.panel.hidePopup();
           gZenThemePicker.panel.removeAttribute('style');
         },

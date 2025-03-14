@@ -37,6 +37,8 @@ var gZenUIManager = {
 
     window.addEventListener('TabClose', this.onTabClose.bind(this));
     this.tabsWrapper.addEventListener('scroll', this.saveScrollbarState.bind(this));
+
+    gZenMediaController.init();
   },
 
   updateTabsToolbar() {
@@ -62,6 +64,7 @@ var gZenUIManager = {
     }
     tabs.style.removeProperty('flex');
     tabs.style.maxHeight = height + 'px';
+    gZenVerticalTabsManager.actualWindowButtons.removeAttribute('zen-has-hover');
   },
 
   get tabsWrapper() {
@@ -346,33 +349,37 @@ var gZenVerticalTabsManager = {
       return visibleTabs[visibleTabs.length - 1] === aTab;
     };
 
-    const tabSize = aTab.getBoundingClientRect().height;
-    const transform = `-${tabSize}px`;
-    gZenUIManager.motion
-      .animate(
-        aTab,
-        {
-          opacity: [0, 1],
-          transform: ['scale(0.95)', 'scale(1)'],
-          marginBottom: isLastTab() ? [] : [transform, '0px'],
-        },
-        {
-          duration: 0.2,
-          easing: 'ease-out',
-        }
-      )
-      .then(() => {
-        aTab.style.removeProperty('margin-bottom');
-        aTab.style.removeProperty('transform');
-        aTab.style.removeProperty('opacity');
-      });
-    gZenUIManager.motion
-      .animate(aTab.querySelector('.tab-content'), {
-        filter: ['blur(1px)', 'blur(0px)'],
-      })
-      .then(() => {
-        aTab.querySelector('.tab-stack').style.removeProperty('filter');
-      });
+    try {
+      const tabSize = aTab.getBoundingClientRect().height;
+      const transform = `-${tabSize}px`;
+      gZenUIManager.motion
+        .animate(
+          aTab,
+          {
+            opacity: [0, 1],
+            transform: ['scale(0.95)', 'scale(1)'],
+            marginBottom: isLastTab() ? [] : [transform, '0px'],
+          },
+          {
+            duration: 0.2,
+            easing: 'ease-out',
+          }
+        )
+        .then(() => {
+          aTab.style.removeProperty('margin-bottom');
+          aTab.style.removeProperty('transform');
+          aTab.style.removeProperty('opacity');
+        });
+      gZenUIManager.motion
+        .animate(aTab.querySelector('.tab-content'), {
+          filter: ['blur(1px)', 'blur(0px)'],
+        })
+        .then(() => {
+          aTab.querySelector('.tab-stack').style.removeProperty('filter');
+        });
+    } catch (e) {
+      console.error(e);
+    }
   },
 
   get actualWindowButtons() {
@@ -619,6 +626,12 @@ var gZenVerticalTabsManager = {
       }
 
       gZenCompactModeManager.updateCompactModeContext(isSingleToolbar);
+      document.getElementById('urlbar').removeAttribute('--urlbar-height');
+      if (!isSingleToolbar) {
+        document.getElementById('urlbar').style.setProperty('--urlbar-height', '32px');
+      } else {
+        gURLBar.updateLayoutBreakout();
+      }
 
       // Always move the splitter next to the sidebar
       this.navigatorToolbox.after(document.getElementById('zen-sidebar-splitter'));
