@@ -39,7 +39,7 @@ class ZenMediaController {
             .then(() => {
               this.mediaControlBar.setAttribute('hidden', 'true');
             });
-        } else {
+        } else if (this.mediaControlBar.hasAttribute('hidden')) {
           this.mediaControlBar.removeAttribute('hidden');
           window.requestAnimationFrame(() => {
             this.mediaControlBar.style.height =
