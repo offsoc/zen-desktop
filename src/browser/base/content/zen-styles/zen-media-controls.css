@@ -110,7 +110,7 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 5px;
+    padding: 4px 6px;
     border-radius: var(--border-radius-medium);
     background: var(--zen-media-control-bg) !important;
     width: 100%;

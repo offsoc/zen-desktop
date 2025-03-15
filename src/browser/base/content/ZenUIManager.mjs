@@ -65,6 +65,7 @@ var gZenUIManager = {
     tabs.style.removeProperty('flex');
     tabs.style.maxHeight = height + 'px';
     gZenVerticalTabsManager.actualWindowButtons.removeAttribute('zen-has-hover');
+    gURLBar.updateLayoutBreakout();
   },
 
   get tabsWrapper() {
@@ -361,7 +362,7 @@ var gZenVerticalTabsManager = {
             marginBottom: isLastTab() ? [] : [transform, '0px'],
           },
           {
-            duration: 0.2,
+            duration: 0.12,
             easing: 'ease-out',
           }
         )
@@ -373,6 +374,9 @@ var gZenVerticalTabsManager = {
       gZenUIManager.motion
         .animate(aTab.querySelector('.tab-content'), {
           filter: ['blur(1px)', 'blur(0px)'],
+        }, {
+          duration: 0.12,
+          easing: 'ease-out',
         })
         .then(() => {
           aTab.querySelector('.tab-stack').style.removeProperty('filter');
