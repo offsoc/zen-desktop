@@ -68,6 +68,12 @@ class ZenMediaController {
         }
       }
     });
+
+    window.addEventListener('DOMAudioPlaybackStarted', (event) => {
+      this.activateMediaControls(event.target.browsingContext.mediaController, event.target);
+    });
+
+    window.addEventListener('DOMAudioPlaybackStopped', () => this.updateMuteState());
   }
 
   /**
