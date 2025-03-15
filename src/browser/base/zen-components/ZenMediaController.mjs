@@ -138,7 +138,7 @@ class ZenMediaController {
   activateMediaControls(mediaController, browser) {
     this.updateMuteState();
 
-    if (this._currentBrowser?.browserId === browser.browserId) return;
+    if (!mediaController.isActive || this._currentBrowser?.browserId === browser.browserId) return;
     else {
       this.deinitMediaController(this._currentMediaController);
       this._currentMediaController = mediaController;
