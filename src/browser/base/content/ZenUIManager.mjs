@@ -372,12 +372,16 @@ var gZenVerticalTabsManager = {
           aTab.style.removeProperty('opacity');
         });
       gZenUIManager.motion
-        .animate(aTab.querySelector('.tab-content'), {
-          filter: ['blur(1px)', 'blur(0px)'],
-        }, {
-          duration: 0.12,
-          easing: 'ease-out',
-        })
+        .animate(
+          aTab.querySelector('.tab-content'),
+          {
+            filter: ['blur(1px)', 'blur(0px)'],
+          },
+          {
+            duration: 0.12,
+            easing: 'ease-out',
+          }
+        )
         .then(() => {
           aTab.querySelector('.tab-stack').style.removeProperty('filter');
         });
