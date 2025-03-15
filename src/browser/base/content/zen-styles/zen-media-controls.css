@@ -86,7 +86,7 @@
     transform: translateX(-50%);
     z-index: 0;
     pointer-events: none;
-    transition: opacity .8s ease;
+    transition: opacity 0.8s ease;
     opacity: 1;
   }
 
@@ -196,9 +196,9 @@
     background: linear-gradient(to right, var(--zen-media-control-bg) 0%, transparent 100%);
     pointer-events: none;
     top: 6px;
-  left: -2px;
-  height: calc(100% - 6px);
-  z-index: 1;
+    left: -2px;
+    height: calc(100% - 6px);
+    z-index: 1;
   }
 
   & label {
