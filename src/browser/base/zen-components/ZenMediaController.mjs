@@ -75,6 +75,12 @@ class ZenMediaController {
         }
       }
     });
+
+    window.addEventListener('DOMAudioPlaybackStarted', (event) => {
+      this.activateMediaControls(event.target.browsingContext.mediaController, event.target);
+    });
+
+    window.addEventListener('DOMAudioPlaybackStopped', () => this.updateMuteState());
   }
 
   /**
@@ -151,7 +157,7 @@ class ZenMediaController {
   activateMediaControls(mediaController, browser) {
     this.updateMuteState();
 
-    if (this._currentBrowser?.browserId === browser.browserId) return;
+    if (!mediaController.isActive || this._currentBrowser?.browserId === browser.browserId) return;
     else {
       this.deinitMediaController(this._currentMediaController);
       this._currentMediaController = mediaController;
@@ -222,25 +228,25 @@ class ZenMediaController {
     if (this._currentDuration >= 900_000) return this.mediaControlBar.setAttribute('media-position-hidden', 'true');
     else this.mediaControlBar.removeAttribute('media-position-hidden');
 
+    if (!this._currentDuration) return;
+
     this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
     this.mediaDuration.textContent = this.formatSecondsToTime(this._currentDuration);
     this.mediaProgressBar.value = (this._currentPosition / this._currentDuration) * 100;
 
-    if (this._currentMediaController?.isPlaying) {
-      this._mediaUpdateInterval = setInterval(() => {
-        if (this._currentMediaController?.isPlaying) {
-          this._currentPosition += 1;
-          if (this._currentPosition > this._currentDuration) {
-            this._currentPosition = this._currentDuration;
-          }
-          this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
-          this.mediaProgressBar.value = (this._currentPosition / this._currentDuration) * 100;
-        } else {
-          clearInterval(this._mediaUpdateInterval);
-          this._mediaUpdateInterval = null;
+    this._mediaUpdateInterval = setInterval(() => {
+      if (this._currentMediaController?.isPlaying) {
+        this._currentPosition += 1;
+        if (this._currentPosition > this._currentDuration) {
+          this._currentPosition = this._currentDuration;
         }
-      }, 1000);
-    }
+        this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
+        this.mediaProgressBar.value = (this._currentPosition / this._currentDuration) * 100;
+      } else {
+        clearInterval(this._mediaUpdateInterval);
+        this._mediaUpdateInterval = null;
+      }
+    }, 1000);
   }
 
   /**
