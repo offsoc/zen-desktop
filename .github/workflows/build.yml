@@ -384,6 +384,8 @@ jobs:
       - name: Execute AppImage build
         run: |
           set -eux
+          export ARCH=${{ matrix.arch }}
+          UPINFO="gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|desktop|latest|zen-$ARCH.AppImage.zsync"
           rm AppDir/.DirIcon || true
           cp configs/branding/${{ inputs.update_branch }}/logo128.png AppDir/usr/share/icons/hicolor/128x128/apps/zen.png
           cp configs/branding/${{ inputs.update_branch }}/logo128.png AppDir/zen.png && ln -s zen.png AppDir/.DirIcon
@@ -396,18 +398,23 @@ jobs:
           APPDIR=AppDir
           tar -xvf *.tar.* && rm -rf *.tar.*
           mv zen/* $APPDIR/
-          wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          wget "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          wget "https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-squashfs-lite-$ARCH"
           chmod +x *.AppImage
+          chmod +x ./uruntime-appimage-squashfs-lite-"$ARCH"
           chmod +x ./AppDir/AppRun
+
+          # keep the uruntime mountpoint (massively speeds up launch time)
+          sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime-appimage-squashfs-lite-"$ARCH"
+
           echo "AppDir: $APPDIR"
           ls -al
           find .
           ls -al "$APPDIR"
-          ARCH=${{ matrix.arch }} ./appimagetool-x86_64.AppImage --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 10 \
-          -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|desktop|latest|zen-${{ matrix.arch }}.AppImage.zsync" \
-          "$APPDIR" zen-${{ matrix.arch }}.AppImage
+          ./appimagetool-x86_64.AppImage -u "$UPINFO" "$APPDIR" zen-"$ARCH".AppImage --runtime-file ./uruntime-appimage-squashfs-lite-"$ARCH"
           mkdir dist
           mv zen*AppImage* dist/.
+          unset ARCH
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -464,10 +471,6 @@ jobs:
           submodules: recursive
           token: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Git pull
-        run: |
-          git pull
-
       - name: Download artifact
         uses: actions/download-artifact@v4
 
@@ -482,6 +485,7 @@ jobs:
           token: ${{ secrets.DEPLOY_KEY }}
 
       - name: Download object files
+        if: ${{ inputs.update_branch == 'release' }}
         run: |
           git clone https://github.com/zen-browser/windows-binaries.git .github/workflows/object
 
@@ -512,63 +516,72 @@ jobs:
           commit_user_email: zen-browser-auto@users.noreply.github.com
           repository: ./updates-server
 
+      - name: Generate Release Notes
+        run: bash .github/workflows/src/generate_release_notes.sh
+
         # If we are on Twilight, we want to just update the Twilight tag's release
       - name: Update Twilight tag
         if: ${{ inputs.update_branch == 'twilight' }}
-        uses: marvinpinto/action-automatic-releases@master
+        uses: softprops/action-gh-release@v2
         with:
+          body_path: release_notes.md
           files: |
-            zen.source.tar.zst
-            zen.linux-x86_64.tar.xz
-            zen.linux-aarch64.tar.xz
-            zen-x86_64.AppImage
-            zen-x86_64.AppImage.zsync
-            zen-aarch64.AppImage
-            zen-aarch64.AppImage.zsync
-            zen.win-x86_64.zip
-            zen.win-arm64.zip
-            linux.mar
-            linux-aarch64.mar
-            windows.mar
-            windows-arm64.mar
-            macos.mar
-            zen.installer.exe
-            zen.installer-arm64.exe
-            zen.macos-universal.dmg
-          automatic_release_tag: 'twilight'
-          title: 'Twilight build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }} at ${{ needs.build-data.outputs.build_time }})'
+            ./zen.source.tar.zst/*
+            ./zen.linux-x86_64.tar.xz/*
+            ./zen.linux-aarch64.tar.xz/*
+            ./zen-x86_64.AppImage/*
+            ./zen-x86_64.AppImage.zsync/*
+            ./zen-aarch64.AppImage/*
+            ./zen-aarch64.AppImage.zsync/*
+            ./zen.win-x86_64.zip/*
+            ./zen.win-arm64.zip/*
+            ./linux.mar/*
+            ./linux-aarch64.mar/*
+            ./windows.mar/*
+            ./windows-arm64.mar/*
+            ./macos.mar/*
+            ./zen.installer.exe/*
+            ./zen.installer-arm64.exe/*
+            ./zen.macos-universal.dmg/*
+          tag_name: 'twilight'
+          name: 'Twilight build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }} at ${{ needs.build-data.outputs.build_time }})'
           draft: false
+          generate_release_notes: false
           prerelease: true
-          repo_token: ${{ secrets.DEPLOY_KEY }}
+          token: ${{ secrets.DEPLOY_KEY }}
+          fail_on_unmatched_files: false
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Release
-        uses: marvinpinto/action-automatic-releases@master
+        uses: softprops/action-gh-release@v2
         if: ${{ inputs.update_branch == 'release' }}
         with:
-          repo_token: '${{ secrets.DEPLOY_KEY }}'
-          automatic_release_tag: ${{ needs.build-data.outputs.version }}
+          token: ${{ secrets.DEPLOY_KEY }}
+          tag_name: ${{ needs.build-data.outputs.version }}
           prerelease: false
-          title: 'Release build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }})'
+          fail_on_unmatched_files: false
+          generate_release_notes: false
+          name: 'Release build - ${{ needs.build-data.outputs.version }} (${{ needs.build-data.outputs.build_date }})'
+          body_path: release_notes.md
           files: |
-            zen.source.tar.zst
-            zen.linux-x86_64.tar.xz
-            zen.linux-aarch64.tar.xz
-            zen-x86_64.AppImage
-            zen-x86_64.AppImage.zsync
-            zen-aarch64.AppImage
-            zen-aarch64.AppImage.zsync
-            .github/workflows/object/windows-x64-signed-x86_64/zen.win-x86_64.zip
-            .github/workflows/object/windows-x64-signed-arm64/zen.win-arm64.zip
-            linux.mar
-            linux-aarch64.mar
-            .github/workflows/object/windows-x64-signed-x86_64/windows.mar
-            .github/workflows/object/windows-x64-signed-arm64/windows-arm64.mar
-            macos.mar
-            .github/workflows/object/windows-x64-signed-x86_64/zen.installer.exe
-            .github/workflows/object/windows-x64-signed-arm64/zen.installer-arm64.exe
-            zen.macos-universal.dmg
+            ./zen.source.tar.zst/*
+            ./zen.linux-x86_64.tar.xz/*
+            ./zen.linux-aarch64.tar.xz/*
+            ./zen-x86_64.AppImage/*
+            ./zen-x86_64.AppImage.zsync/*
+            ./zen-aarch64.AppImage/*
+            ./zen-aarch64.AppImage.zsync/*
+            ./.github/workflows/object/windows-x64-signed-x86_64/zen.win-x86_64.zip
+            ./.github/workflows/object/windows-x64-signed-arm64/zen.win-arm64.zip
+            ./linux.mar/*
+            ./linux-aarch64.mar/*
+            ./.github/workflows/object/windows-x64-signed-x86_64/windows.mar
+            ./.github/workflows/object/windows-x64-signed-arm64/windows-arm64.mar
+            ./macos.mar/*
+            ./.github/workflows/object/windows-x64-signed-x86_64/zen.installer.exe
+            ./.github/workflows/object/windows-x64-signed-arm64/zen.installer-arm64.exe
+            ./zen.macos-universal.dmg/*
 
   prepare-flatpak:
     if: ${{ inputs.create_release && inputs.update_branch == 'release' }}
@@ -688,6 +701,7 @@ jobs:
           rm -rf zen-browser
           rm -rf archive.tar
           rm -rf zen.linux-x86_64.tar.xz
+          rm -rf zen.linux-aarch64.tar.xz
 
       - name: Upload Flatpak manifest
         uses: actions/upload-artifact@v4

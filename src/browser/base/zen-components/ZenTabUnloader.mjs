@@ -128,13 +128,20 @@
   class ZenTabUnloader extends ZenDOMOperatedFeature {
     static ACTIVITY_MODIFIERS = ['muted', 'soundplaying', 'label', 'attention'];
 
+    constructor() {
+      super();
+      if (!lazy.zenTabUnloaderEnabled) {
+        return;
+      }
+      this.intervalUnloader = new ZenTabsIntervalUnloader(this);
+    }
+
     init() {
       if (!lazy.zenTabUnloaderEnabled) {
         return;
       }
       this.insertIntoContextMenu();
       this.observer = new ZenTabsObserver();
-      this.intervalUnloader = new ZenTabsIntervalUnloader(this);
       this.observer.addTabsListener(this.onTabEvent.bind(this));
     }
 
@@ -225,6 +232,10 @@
 
     unloadTab() {
       const tabs = TabContextMenu.contextTab.multiselected ? gBrowser.selectedTabs : [TabContextMenu.contextTab];
+      this.explicitUnloadTabs(tabs);
+    }
+
+    explicitUnloadTabs(tabs) {
       for (let i = 0; i < tabs.length; i++) {
         if (this.canUnloadTab(tabs[i], Date.now(), this.intervalUnloader.excludedUrls, true)) {
           this.unload(tabs[i]);
@@ -253,7 +264,7 @@
         (tab.pinned && !ignoreTimestamp) ||
         tab.selected ||
         (tab.multiselected && !ignoreTimestamp) ||
-        tab.hasAttribute('busy') ||
+        (tab.hasAttribute('busy') && !ignoreTimestamp) ||
         tab.hasAttribute('pending') ||
         !tab.linkedPanel ||
         tab.splitView ||
@@ -263,7 +274,8 @@
         (tab.pictureinpicture && !ignoreTimestamp) ||
         (tab.soundPlaying && !ignoreTimestamp) ||
         (tab.zenIgnoreUnload && !ignoreTimestamp) ||
-        excludedUrls.some((url) => url.test(tab.linkedBrowser.currentURI.spec))
+        (excludedUrls.some((url) => url.test(tab.linkedBrowser?.currentURI.spec)) &&
+          tab.linkedBrowser?.currentURI.spec !== 'about:blank')
       ) {
         return false;
       }

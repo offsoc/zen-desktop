@@ -25,7 +25,11 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, aarch64]
-
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+      CARGO_TERM_COLOR: always
+      RUSTC_WRAPPER: 'sccache'
+      CARGO_INCREMENTAL: 0
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,6 +41,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@main
+        with:
+          disable_annotations: true
+
+      - name: Expose actions cache variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -50,7 +66,7 @@ jobs:
       - name: Install system dependencies
         run: |
           brew update
-          brew install cairo sccache gnu-tar mercurial
+          brew install cairo gnu-tar mercurial
           sudo pip install setuptools
 
           brew uninstall --ignore-dependencies python3.12 -f

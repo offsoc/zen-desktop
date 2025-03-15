@@ -1,13 +1,10 @@
 {
-  const lazy = {};
   var ZenStartup = {
     init() {
       this.openWatermark();
-      window.SessionStore.promiseInitialized.then(() => {
-        this._changeSidebarLocation();
-        this._zenInitBrowserLayout();
-        this._initSearchBar();
-      });
+      this._changeSidebarLocation();
+      this._zenInitBrowserLayout();
+      this._initSearchBar();
     },
 
     _zenInitBrowserLayout() {
@@ -38,29 +35,46 @@
         gZenVerticalTabsManager.init();
         gZenUIManager.init();
 
+        this._checkForWelcomePage();
+
         document.l10n.setAttributes(document.getElementById('tabs-newtab-button'), 'tabs-toolbar-new-tab');
       } catch (e) {
         console.error('ZenThemeModifier: Error initializing browser layout', e);
       }
-      this.closeWatermark();
+      ZenWorkspaces.promiseInitialized.then(() => {
+        this.closeWatermark();
+      });
     },
 
     openWatermark() {
       if (!Services.prefs.getBoolPref('zen.watermark.enabled', false)) {
+        document.documentElement.removeAttribute('zen-before-loaded');
         return;
       }
-      const watermark = window.MozXULElement.parseXULToFragment(`
-        <html:div id="zen-watermark">
-          <image src="chrome://branding/content/about-logo.png" />
-        </html:div>
-      `);
-      document.body.appendChild(watermark);
+      for (let elem of document.querySelectorAll('#browser > *, #urlbar')) {
+        elem.style.opacity = 0;
+      }
     },
 
     closeWatermark() {
-      const watermark = document.getElementById('zen-watermark');
-      if (watermark) {
-        watermark.setAttribute('hidden', 'true');
+      document.documentElement.removeAttribute('zen-before-loaded');
+      if (Services.prefs.getBoolPref('zen.watermark.enabled', false)) {
+        gZenUIManager.motion
+          .animate(
+            '#browser > *, #urlbar, #tabbrowser-tabbox > *',
+            {
+              opacity: [0, 1],
+            },
+            {
+              delay: 0.6,
+              easing: 'ease-in-out',
+            }
+          )
+          .then(() => {
+            for (let elem of document.querySelectorAll('#browser > *, #urlbar, #tabbrowser-tabbox > *')) {
+              elem.style.removeProperty('opacity');
+            }
+          });
       }
     },
 
@@ -85,7 +99,7 @@
     _initSidebarScrolling() {
       // Disable smooth scroll
       const canSmoothScroll = Services.prefs.getBoolPref('zen.startup.smooth-scroll-in-tabs', false);
-      const tabsWrapper = document.getElementById('zen-browser-tabs-wrapper');
+      const tabsWrapper = document.getElementById('zen-tabs-wrapper');
       gBrowser.tabContainer.addEventListener('wheel', (event) => {
         if (canSmoothScroll) return;
         event.preventDefault(); // Prevent the smooth scroll behavior
@@ -94,8 +108,8 @@
       // Detect overflow and underflow
       const observer = new ResizeObserver((_) => {
         const tabContainer = gBrowser.tabContainer;
-        const isVertical = tabContainer.getAttribute('orient') === 'vertical';
-        let contentSize = tabsWrapper.getBoundingClientRect()[isVertical ? 'height' : 'width'];
+        // const isVertical = tabContainer.getAttribute('orient') === 'vertical';
+        // let contentSize = tabsWrapper.getBoundingClientRect()[isVertical ? 'height' : 'width'];
         // NOTE: This should be contentSize > scrollClientSize, but due
         // to how Gecko internally rounds in those cases, we allow for some
         // minor differences (the internal Gecko layout size is 1/60th of a
@@ -118,6 +132,13 @@
       gURLBar._initCopyCutController();
       gURLBar._initPasteAndGo();
       gURLBar._initStripOnShare();
+    },
+
+    _checkForWelcomePage() {
+      if (!Services.prefs.getBoolPref('zen.welcome-screen.seen', false)) {
+        Services.prefs.setBoolPref('zen.welcome-screen.seen', true);
+        Services.scriptloader.loadSubScript('chrome://browser/content/zen-components/ZenWelcome.mjs', window);
+      }
     },
   };
 

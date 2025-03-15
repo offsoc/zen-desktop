@@ -28,9 +28,9 @@
 
 ## 🖥️ Compatibility
 
-Zen is currently built using firefox version `135.0`! 🚀
+Zen is currently built using Firefox version `136.0.1`! 🚀
 
-- [`Zen Twilight`](https://zen-browser.app/download?twilight) - Is currently built using firefox version `RC 135.0`!
+- [`Zen Twilight`](https://zen-browser.app/download?twilight) - Is currently built using Firefox version `RC 136.0`!
 - Check out the latest [release notes](https://zen-browser.app/release-notes)!
 - Part of our mission is to keep Zen up-to-date with the latest version of Firefox, so you can enjoy the latest features and security updates!
 
@@ -40,11 +40,11 @@ Zen is an open-source project, and we welcome contributions from the community! 
 
 ### Issue metrics
 
-We keep track of how many issues are closed at the end of the month in [docs/issue-metrics](./docs/issue-metrics). This is to keep track of how many issues are being closed, because who doesn't like to see progress? 📈
+We keep track of how many issues are closed at the end of the month in [docs/issue-metrics](./docs/issue-metrics). We use this to keep track of our issues and see our progress! 📈
 
 ### Versioning
 
-Zen uses [Semantic Versioning](https://semver.org/) for versioning. Meaning, versions are displayed as `a.bc.d` where:
+Zen uses [Semantic Versioning](https://semver.org/), meaning versions are displayed as `a.b.cd` where:
 
 - `a` is the major version
 - `b` is the minor version
@@ -67,7 +67,7 @@ Zen is built with performance in mind, and we have optimized the browser to be a
 
 Zen is available for Linux, macOS, and Windows. You can download the latest version from the official website at [zen-browser.app](https://zen-browser.app/download), or from the [GitHub Releases](https://github.com/zen-browser/desktop/releases) page.
 
-If you dont see your OS listed below, that's because we already have it in our [downloads page](https://zen-browser.app/download)! Make sure to check it out!
+If you don't see your OS listed below, that's because we already have it in our [downloads page](https://zen-browser.app/download)! Make sure to check it out!
 
 #### Windows
 
@@ -96,16 +96,21 @@ brew install --cask zen-browser
 yay -S zen-browser-bin
 ```
 
-##### Other Linux distributions (AppImage with automated system integration)
+##### Other Linux distributions (Tarball or AppImage)
 
-- `native` tarball install:
-  `bash <(curl -s https://updates.zen-browser.app/install.sh)`
+- `Tarball` install:
 
-- `zsync` is required for the Update feature of the script below
+```sh
+bash <(curl -s https://updates.zen-browser.app/install.sh)`
+```
+
+- `AppImage` install:
 
 ```sh
 bash <(curl https://updates.zen-browser.app/appimage.sh)
 ```
+
+> AppImage install requires `zsync` for the Update feature
 
 - Again, if you don't see your OS listed above, that's because we already have it in our [downloads page](https://zen-browser.app/download)! 🔄
 
@@ -117,7 +122,7 @@ Some components used by @zen-browser as an attempt to make firefox forks a bette
 
 #### `Run Locally`
 
-In order to download and run zen locally, please follow [these instructions](https://docs.zen-browser.app/building).
+In order to download and run Zen locally, please follow [these instructions](https://docs.zen-browser.app/building).
 
 #### `Special Thanks`
 
@@ -133,10 +138,10 @@ Zen couldn't be in its current state without the help of these amazing projects!
 
 ### 🖥️ Comparison with other browsers
 
-Thanks everyone for making zen stand out among these giants!
+Thanks everyone for making Zen stand out among these giants!
 
 [![Star History Chart](https://api.star-history.com/svg?repos=zen-browser/desktop,chromium/chromium,brave/brave-browser&type=Date)](https://star-history.com/#zen-browser/desktop&chromium/chromium&brave/brave-browser&Date)
 
 ## 📄 License
 
-Zen browser is under the [MPL LICENSE](./LICENSE). All the code is open-source and free to use! Attributions are appreciated but not required.
+Zen browser is under the [MPL 2.0 LICENSE](./LICENSE). All the code is open-source and free to use! Attribution is appreciated but not required.

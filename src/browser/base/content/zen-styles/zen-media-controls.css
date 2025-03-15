@@ -1,0 +1,241 @@
+#zen-media-controls-toolbar {
+  --progress-height: 4px;
+  --button-spacing: 2px;
+
+  display: flex;
+  justify-content: space-between;
+  min-width: 0;
+  background: transparent;
+  container-type: inline-size;
+
+  .toolbarbutton-1 {
+    border-radius: 5px;
+    color: white;
+  }
+
+  #zen-media-prev-button,
+  #zen-media-play-pause-button,
+  #zen-media-next-button {
+    margin: 0;
+  }
+
+  image.toolbarbutton-icon {
+    padding: 5px;
+    width: 26px;
+    height: 26px;
+  }
+
+  #zen-media-progress-bar {
+    appearance: none;
+    width: 100%;
+    height: var(--progress-height);
+    margin: 0 8px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: height 0.15s ease-out;
+
+    &::-moz-range-track {
+      background: var(--zen-colors-border);
+      border-radius: 999px;
+      height: var(--progress-height);
+    }
+
+    &::-moz-range-progress {
+      background: var(--zen-primary-color);
+      border-radius: 999px;
+      height: var(--progress-height);
+    }
+
+    &::-moz-range-thumb {
+      background: var(--zen-primary-color);
+      border: none;
+      width: calc(var(--progress-height) * 2);
+      height: calc(var(--progress-height) * 2);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+
+  &:hover {
+    & #zen-media-main-vbox {
+      transition-delay: 0s;
+      gap: 6px;
+    }
+
+    .show-on-hover {
+      max-height: 50px;
+      padding: 5px;
+      margin-bottom: 0;
+      opacity: 1;
+      transform: translateY(0) !important;
+      pointer-events: auto;
+    }
+  }
+
+  & #zen-media-focus-button::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    opacity: 1;
+    background: url('chrome://browser/content/zen-images/note-indicator.svg') no-repeat;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    opacity: 1;
+  }
+
+  &:is(:not(.playing:not([muted])), :hover) #zen-media-focus-button::after {
+    opacity: 0;
+  }
+
+  #zen-media-focus-button {
+    align-self: center;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+    position: relative;
+  }
+
+  toolbaritem {
+    --zen-media-control-bg: light-dark(rgb(255, 255, 255), rgb(10, 10, 10)) !important;
+    flex-grow: 1;
+    padding: 0;
+    transition: padding 0.3s ease-out;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 5px;
+    border-radius: var(--border-radius-medium);
+    background: var(--zen-media-control-bg) !important;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .show-on-hover {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(1rem);
+    padding: 0 6px;
+    pointer-events: none;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      padding 0.3s ease;
+  }
+
+  #zen-media-current-time,
+  #zen-media-duration {
+    margin: 0 0 0 1px;
+    font-size: x-small;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+}
+
+#zen-media-controls-toolbar {
+  display: none;
+  animation: none;
+  transition: none;
+
+  &:not([hidden]) {
+    display: flex;
+    height: 2.5rem;
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+#zen-media-title,
+#zen-media-artist {
+  align-self: start;
+}
+
+#zen-media-artist {
+  opacity: 0.7;
+  font-size: smaller;
+
+  &:empty {
+    display: none;
+  }
+}
+
+#zen-media-title {
+  height: 16px;
+  font-size: math;
+}
+
+#zen-media-main-vbox,
+#zen-media-info-vbox,
+#zen-media-progress-hbox {
+  width: 100%;
+}
+
+#zen-media-info-vbox {
+  #zen-media-controls-toolbar:not([media-position-hidden='true']) & {
+    transition-delay: 0.01s !important;
+    transform: translateY(-0.4rem);
+  }
+  overflow-x: hidden;
+  overflow-x: visible;
+  white-space: nowrap;
+  /* Overflow inner box shadow from the left to simulate overflow */
+  mask-image: linear-gradient(to left, transparent, var(--zen-media-control-bg) 0.6em);
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 0.6em;
+    background: linear-gradient(to right, var(--zen-media-control-bg) 0%, transparent 100%);
+    pointer-events: none;
+    top: 6px;
+    left: -2px;
+    height: calc(100% - 6px);
+    z-index: 1;
+  }
+
+  & label {
+    min-height: 16px;
+    margin-left: 0;
+    font-weight: 500;
+    animation: zen-marquee-h 10s ease-in-out infinite;
+  }
+}
+
+#zen-media-main-vbox {
+  height: 100%;
+  justify-content: space-between;
+  transition: gap 0.3s ease;
+  gap: 0px;
+}
+
+#zen-media-progress-hbox {
+  flex-grow: 1;
+  height: 1.1rem;
+  align-items: center;
+  padding-top: 0px !important;
+
+  #zen-media-controls-toolbar[media-position-hidden='true'] & {
+    display: none;
+  }
+}
+
+#zen-media-controls-hbox {
+  align-items: flex-end;
+  justify-content: space-between;
+  max-width: 100%;
+  --toolbarbutton-outer-padding: 0;
+}
+
+:root:not([zen-sidebar-expanded='true']) {
+  #zen-media-controls-toolbar {
+    display: none;
+  }
+}

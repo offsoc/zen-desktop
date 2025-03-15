@@ -1,8 +1,8 @@
 diff --git a/browser/base/content/main-popupset.inc.xhtml b/browser/base/content/main-popupset.inc.xhtml
-index e5f3424eaeeec0ba552537f167dd99e912216d94..4bdfcdb23fe9c44ad3d4de273c64f4cc31cb4034 100644
+index 959c523b21c642f29353b9de37b3ce6b5505b01b..4cd26ea85ad4905bade71dcd470b8678079787bd 100644
 --- a/browser/base/content/main-popupset.inc.xhtml
 +++ b/browser/base/content/main-popupset.inc.xhtml
-@@ -181,6 +181,10 @@
+@@ -206,6 +206,10 @@
             hidden="true"
             tabspecific="true"
             aria-labelledby="editBookmarkPanelTitle">
@@ -13,7 +13,7 @@ index e5f3424eaeeec0ba552537f167dd99e912216d94..4bdfcdb23fe9c44ad3d4de273c64f4cc
        <box class="panel-header">
          <html:h1>
            <html:span id="editBookmarkPanelTitle"/>
-@@ -206,6 +210,7 @@
+@@ -231,6 +235,7 @@
                    class="footer-button"/>
          </html:moz-button-group>
        </vbox>
@@ -21,7 +21,21 @@ index e5f3424eaeeec0ba552537f167dd99e912216d94..4bdfcdb23fe9c44ad3d4de273c64f4cc
      </panel>
    </html:template>
  
-@@ -535,6 +540,8 @@
+@@ -426,11 +431,13 @@
+               observes="cmd_CustomizeToolbars"
+               class="viewCustomizeToolbar"
+               data-lazy-l10n-id="toolbar-context-menu-view-customize-toolbar-2"/>
++#if 0
+     <menuseparator id="sidebarRevampSeparator"/>
+     <menuitem id="toolbar-context-toggle-vertical-tabs"
+               data-lazy-l10n-id="toolbar-context-turn-on-vertical-tabs"/>
+     <menuitem id="toolbar-context-customize-sidebar"
+               data-lazy-l10n-id="toolbar-context-customize-sidebar"/>
++#endif
+     <menuseparator contexttype="fullscreen"/>
+     <menuitem id="toolbar-context-full-screen-autohide"
+               class="fullscreen-context-autohide"
+@@ -565,6 +572,8 @@
  
  #include popup-notifications.inc.xhtml
  

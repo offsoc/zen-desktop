@@ -1,8 +1,8 @@
 diff --git a/modules/libpref/init/StaticPrefList.yaml b/modules/libpref/init/StaticPrefList.yaml
-index 7364514f74703184462e8dbce3f0aafc3f850a3d..560671beddf6c216e918a47bd5dbd4e770a24ec7 100644
+index a9863858f9a28b2c633edd9689d4379203eef1e6..7ac24baf70727a2a9be428c6f98763f312a0969b 100644
 --- a/modules/libpref/init/StaticPrefList.yaml
 +++ b/modules/libpref/init/StaticPrefList.yaml
-@@ -18067,7 +18067,7 @@
+@@ -18305,7 +18305,7 @@
  # Whether we use the mica backdrop. Off by default for now.
  - name: widget.windows.mica
    type: bool
@@ -11,7 +11,7 @@ index 7364514f74703184462e8dbce3f0aafc3f850a3d..560671beddf6c216e918a47bd5dbd4e7
    mirror: once
  #endif
  
-@@ -18180,6 +18180,26 @@
+@@ -18418,6 +18418,26 @@
    mirror: always
  #endif
  
@@ -22,9 +22,9 @@ index 7364514f74703184462e8dbce3f0aafc3f850a3d..560671beddf6c216e918a47bd5dbd4e7
 +  mirror: never
 +
 +#ifdef XP_MACOSX
-+- name: zen.widget.mac.mono-window-controls
-+  type: RelaxedAtomicBool
-+  value: false
++- name: zen.widget.macos.window-material
++  type: uint32_t
++  value: 1
 +  mirror: always
 +#endif
 +

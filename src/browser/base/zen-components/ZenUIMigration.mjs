@@ -56,7 +56,6 @@ class ZenUIMigration {
         },
       ]
     );
-    notification.persistence = -1;
   }
 }
 

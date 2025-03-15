@@ -16,6 +16,10 @@
   --urlbarView-highlight-background: var(--toolbarbutton-hover-background);
   border-radius: var(--toolbarbutton-border-radius);
   padding: 1px;
+
+  :root:not([zen-single-toolbar='true']) &[zen-floating-urlbar='true'] {
+    --urlbar-container-padding: 2px !important;
+  }
 }
 
 .urlbar-input::placeholder {
@@ -24,10 +28,6 @@
 
 #searchbar:focus-within {
   border-color: transparent !important;
-}
-
-#urlbar[focused='true'] {
-  box-shadow: var(--panel-shadow) !important;
 }
 
 #urlbar-background {
@@ -48,6 +48,16 @@
   outline-color: none !important;
 }
 
+#urlbar:not([breakout-extend='true']) {
+  & #urlbar-background {
+    transition: background-color 0.15s ease;
+  }
+
+  &:hover #urlbar-background {
+    background-color: light-dark(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.2)) !important;
+  }
+}
+
 #identity-box.chromeUI:not([pageproxystate='invalid']) {
   & #identity-icon-box {
     background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)) !important;
@@ -62,7 +72,6 @@
   background: transparent !important;
 }
 
-#urlbar:is([focused], [open]) > #urlbar-background,
 #searchbar:focus-within {
   background: var(--urlbar-box-bgcolor);
 }
@@ -71,15 +80,11 @@
   padding-inline-start: 8px !important;
 }
 
-#identity-box.chromeUI:not([pageproxystate='invalid']) #identity-icon-box {
-  margin-right: 0 !important;
-}
-
 #urlbar:not([extend='true']) #identity-box #identity-icon-box {
   position: relative;
 }
 
-#urlbar:not([breakout-extend='true']) #identity-box:is(:not(.chromeUI), [pageproxystate='invalid']) {
+#urlbar:not([breakout-extend='true']) #identity-box {
   margin-inline-end: 0 !important;
 }
 
@@ -89,6 +94,12 @@
   justify-content: center !important;
   align-items: center !important;
   margin: 0;
+
+  :root[zen-single-toolbar='true'] & {
+    padding: 6px !important;
+    width: unset !important;
+    height: unset !important;
+  }
 }
 
 #tracking-protection-icon-container {
@@ -97,8 +108,6 @@
 
 .urlbar-page-action,
 #tracking-protection-icon-container {
-  width: calc(var(--urlbar-min-height) - 6 * var(--urlbar-container-padding)) !important;
-  height: calc(var(--urlbar-min-height) - 6 * var(--urlbar-container-padding)) !important;
   margin-top: auto !important;
   margin-bottom: auto !important;
 }
@@ -120,51 +129,72 @@
   order: 2 !important;
 }
 
+#urlbar[breakout] {
+  position: fixed;
+}
+
 #urlbar[breakout-extend='true'] #urlbar-background {
-  box-shadow:
-    inset 0 0 0.5px 1px hsla(0, 0%, 100%, 0.1),
-    /* 2. shadow ring 👇 */ 0 0 0 1px hsla(230, 13%, 9%, 0.075),
-    /* 3. multiple soft shadows 👇 */ 0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
-    0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
-    0 6.5px 12px hsla(230, 13%, 9%, 0.1) !important;
+  box-shadow: 0px 0px 90px -10px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid hsla(0, 0%, 100%, 0.1) !important;
   backdrop-filter: none !important;
+  border-radius: 0.8rem !important;
+}
+
+#urlbar-go-button {
+  display: none;
 }
 
 :root[zen-single-toolbar='true'] {
-  .urlbar-page-action:not([open]),
+  --urlbar-icon-border-radius: 10px !important;
+
+  .urlbar-page-action:not([open]):not(#identity-permission-box),
   #tracking-protection-icon-container {
-    margin-inline-end: calc(-14px - 2 * var(--urlbar-icon-padding)) !important;
-    opacity: 0;
+    display: none;
+  }
+
+  #identity-box:not([pageproxystate='invalid']) #identity-icon-box:not([open]) {
+    margin-inline-start: calc(-8px - 2 * var(--urlbar-icon-padding));
+    transform: translateX(100%);
     transition: all 0.1s ease;
+    opacity: 0;
   }
 
   #identity-permission-box > *:not(#permissions-granted-icon) {
     visibility: collapse;
   }
 
-  #urlbar[open] :is(#tracking-protection-icon-container, .urlbar-page-action),
-  #urlbar:hover :is(#tracking-protection-icon-container, .urlbar-page-action),
-  .urlbar-page-action[open],
-  #tracking-protection-icon-container[open] {
-    opacity: 1;
-    margin-inline-end: 0 !important;
+  #identity-icon-label {
+    display: none;
   }
 
-  #identity-permission-box:not([open]),
+  #urlbar[open]
+    :is(#tracking-protection-icon-container, .urlbar-page-action, .identity-box-button):not([hidden='true']):not(
+      #identity-permission-box
+    ),
+  #urlbar:hover #identity-icon-box {
+    opacity: 1 !important;
+    margin-inline-start: 0 !important;
+    transform: none !important;
+    display: flex;
+    #urlbar:not(:hover) & {
+      transition: 0;
+    }
+  }
+
+  #urlbar:not([open]) #userContext-icons {
+    margin-inline: 0;
+  }
+
+  #urlbar:not([open]) {
+    #identity-box:not([pageproxystate='invalid']) {
+      order: 9;
+    }
+  }
+
   #notification-popup-box:not([open]) {
     margin-inline-start: calc(-10px - 2 * var(--urlbar-icon-padding));
     opacity: 0;
     transition: all 0.2s;
-  }
-
-  #urlbar[open] #identity-permission-box,
-  #urlbar[open] #notification-popup-box,
-  #urlbar:hover #identity-permission-box,
-  #urlbar:hover #notification-popup-box,
-  #identity-permission-box[open],
-  #notification-popup-box[open] {
-    opacity: 1;
-    margin-inline-start: 0 !important;
   }
 
   #notification-popup-box {
@@ -292,7 +322,7 @@ button.popup-notification-dropmarker {
 #urlbar .urlbar-page-action,
 #urlbar #tracking-protection-icon-container,
 #urlbar:not([breakout-extend='true']) #identity-box:is(:not(.chromeUI), [pageproxystate='invalid']) #identity-icon-box {
-  border-radius: 8px !important;
+  border-radius: var(--urlbar-icon-border-radius) !important;
 }
 
 /* Extensions or similar */
@@ -306,7 +336,7 @@ button.popup-notification-dropmarker {
   background: transparent;
 
   &[notificationside='top'] {
-    position: absolute;
+    position: fixed;
     bottom: calc(var(--zen-element-separation) * 1.5);
     right: calc(var(--zen-element-separation) * 1.5);
     width: fit-content;
@@ -391,14 +421,19 @@ button.popup-notification-dropmarker {
     /* We cant have a transparent background with a backdrop-filter because on normal websites,
       the backdrop woudn't work, we would need to apply a clip-path to the site and that's not recommended
       due to performance issues */
-    background-color: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 14%)) !important;
-    outline: 1px solid rgba(0, 0, 0, 0.3) !important;
+    background-color: light-dark(
+      hsl(0, 0%, 100%),
+      color-mix(in srgb, hsl(0, 0%, 5%) 90%, var(--zen-colors-primary) 10%)
+    ) !important;
+    @media (-prefers-color-scheme: dark) {
+      outline: 1px solid rgba(0, 0, 0, 0.3) !important;
+    }
   }
 }
 
 :root[zen-single-toolbar='true'] {
   #urlbar[open] {
-    min-width: 35vw;
+    min-width: min(90%, 40rem);
   }
 
   &[zen-right-side='true'] #urlbar[open]:not([zen-floating-urlbar='true']) {
@@ -408,31 +443,30 @@ button.popup-notification-dropmarker {
 
 #urlbar[open][zen-floating-urlbar='true'] {
   z-index: 1000;
-  max-width: 45vw;
-  min-width: 45vw !important;
+  max-width: unset;
+  min-width: unset !important;
   --urlbar-container-height: 55px !important;
   --urlbar-margin-inline: 10px !important;
-  position: absolute;
 
+  width: min(90%, 50rem) !important;
   font-size: 1.15em !important;
   @media (-moz-platform: macos) {
     font-size: 1.5em !important;
+    width: min(90%, 60rem) !important;
   }
-  top: calc(var(--zen-toolbar-height) * 2) !important;
-
-  --zen-urlbar-center: calc(var(--zen-urlbar-offset, 0px) + 28vw);
-
-  :root[zen-right-side='true'] & {
-    right: var(--zen-urlbar-center) !important;
-  }
-
-  :root:not([zen-right-side='true']) & {
-    left: var(--zen-urlbar-center) !important;
-  }
+  top: 25vh !important;
+  transform: translateX(-50%);
+  left: 50% !important;
 
   #urlbar-container:has(&) {
     border-radius: 10px;
     background: var(--toolbarbutton-hover-background);
+  }
+}
+
+@media not (-moz-bool-pref: 'zen.urlbar.show-protections-icon') {
+  #tracking-protection-icon-container {
+    display: none !important;
   }
 }
 

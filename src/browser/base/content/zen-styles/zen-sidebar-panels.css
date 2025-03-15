@@ -111,24 +111,25 @@
   background: transparent;
   border: none;
   cursor: ew-resize;
+  z-index: 2;
 
   &:is(.zen-split-view-splitter[orient='vertical']) {
     /* Bit of a hacky solution, but it works */
-    width: calc(var(--zen-element-separation) - 3px);
-    margin-left: calc(-1 * var(--zen-element-separation) / 2 - 2px);
+    width: var(--zen-split-row-gap);
+    margin-left: calc(var(--zen-element-separation) * -1 - 1px);
     height: unset;
+    cursor: ew-resize;
   }
 
   &::before {
     height: 50px;
-    width: 4px;
-    background: var(--zen-colors-primary);
+    width: 2px;
+    background: var(--button-primary-bgcolor);
     border-radius: 2px;
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
     pointer-events: none;
@@ -137,10 +138,6 @@
   &:hover::before {
     opacity: 1;
   }
-}
-
-.zen-split-view-splitter[orient='vertical']::before {
-  transform: translate(-75%, -50%);
 }
 
 .zen-sidebar-web-panel-splitter[side='right'] {

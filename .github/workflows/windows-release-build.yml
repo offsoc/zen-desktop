@@ -28,7 +28,11 @@ jobs:
     name: Build Windows - ${{ matrix.arch }}
     # aarch64 does not need full 16x, and we also dont use full LTO when generating GPO
     runs-on: ${{ (inputs.release-branch == 'release' && !inputs.generate-gpo && matrix.arch == 'x86_64') && 'self-hosted' || 'ubuntu-latest' }}
-
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+      CARGO_TERM_COLOR: always
+      RUSTC_WRAPPER: 'sccache'
+      CARGO_INCREMENTAL: 0
     strategy:
       fail-fast: false
       matrix:
@@ -41,6 +45,10 @@ jobs:
         with:
           tool-cache: false
 
+      # Bug: https://github.com/actions/checkout/issues/1153
+      - name: Remove zombie lock file
+        run: rm -f /home/ubuntu/actions-runner/_work/desktop/desktop/.git/modules/l10n/index.lock
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -51,6 +59,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@main
+        with:
+          disable_annotations: true
+
+      - name: Expose actions cache variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env['ACTIONS_RUNTIME_TOKEN'])
 
       - name: Setup Git
         run: |
@@ -78,13 +98,6 @@ jobs:
         with:
           path: ${HOME}/win-cross
           key: win-cross
-
-      - name: Configure sccache
-        uses: actions/github-script@v7
-        with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Setup for Windows
         if: steps.cache-win-cross.outputs.cache-hit != 'true' && !(inputs.generate-gpo && matrix.arch == 'aarch64')
@@ -164,14 +177,14 @@ jobs:
         if: ${{ !(inputs.generate-gpo && matrix.arch == 'aarch64') }}
         run: |
           cd engine/
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain 1.79
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain 1.81
           source $HOME/.cargo/env
           if test "${{ matrix.arch }}" = "aarch64"; then
             rustup target add aarch64-pc-windows-msvc
           else
             rustup target add x86_64-pc-windows-msvc
           fi
-          cargo install cargo-download
+          cargo install cargo-download --locked
           cargo download -x windows=0.58.0
           export CARGO_INCREMENTAL=0
           echo "" >> ../configs/common/mozconfig

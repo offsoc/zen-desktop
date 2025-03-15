@@ -940,17 +940,7 @@ Preferences.addAll([
     default: true,
   },
   {
-    id: 'zen.theme.pill-button',
-    type: 'bool',
-    default: true,
-  },
-  {
     id: 'zen.workspaces.hide-default-container-indicator',
-    type: 'bool',
-    default: true,
-  },
-  {
-    id: 'zen.workspaces.individual-pinned-tabs',
     type: 'bool',
     default: true,
   },
@@ -973,11 +963,6 @@ Preferences.addAll([
     id: 'zen.tab-unloader.timeout-minutes',
     type: 'int',
     default: 10,
-  },
-  {
-    id: 'zen.view.show-bottom-border',
-    type: 'bool',
-    default: false,
   },
   {
     id: 'zen.workspaces.hide-deactivated-workspaces',

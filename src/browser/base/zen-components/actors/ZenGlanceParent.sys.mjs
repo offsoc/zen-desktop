@@ -15,6 +15,16 @@ export class ZenGlanceParent extends JSWindowActorParent {
         this.openGlance(this.browsingContext.topChromeWindow, message.data);
         break;
       }
+      case 'ZenGlance:CloseGlance': {
+        const params = {
+          onTabClose: true,
+          ...message.data,
+        };
+        this.browsingContext.topChromeWindow.gZenGlanceManager.closeGlance(params);
+        break;
+      }
+      default:
+        console.warn(`[glance]: Unknown message: ${message.name}`);
     }
   }
 
