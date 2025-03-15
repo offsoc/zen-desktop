@@ -219,8 +219,8 @@ class ZenMediaController {
       this._mediaUpdateInterval = null;
     }
 
-    if (this._currentDuration >= 900_000) return this.mediaProgressBarContainer.setAttribute('hidden', 'true');
-    else this.mediaProgressBarContainer.removeAttribute('hidden');
+    if (this._currentDuration >= 900_000) return this.mediaControlBar.setAttribute('media-position-hidden', 'true');
+    else this.mediaControlBar.removeAttribute('media-position-hidden');
 
     this.mediaCurrentTime.textContent = this.formatSecondsToTime(this._currentPosition);
     this.mediaDuration.textContent = this.formatSecondsToTime(this._currentDuration);

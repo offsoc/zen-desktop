@@ -36,10 +36,6 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     this._resolveInitialized = resolve;
   });
 
-  promiseEmptyTabInitialized = new Promise((resolve) => {
-    this._resolveEmptyTabInitialized = resolve;
-  });
-
   workspaceIndicatorXUL = `
     <hbox class="zen-current-workspace-indicator-icon"></hbox>
     <hbox class="zen-current-workspace-indicator-name"></hbox>
@@ -621,11 +617,15 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (Services.prefs.getBoolPref('zen.workspaces.disable_empty_state_for_testing', false)) {
       return;
     }
+    if (this._initialTab) {
+      this.moveTabToWorkspace(this._initialTab, this.activeWorkspace);
+      gBrowser.selectedTab = this._initialTab;
+      gBrowser.moveTabTo(this._initialTab, 0, { forceStandaloneTab: true });
+      this._initialTab._possiblyEmpty = false;
+      this._initialTab = null;
+    }
     const currentTab = gBrowser.selectedTab;
     let showed = false;
-    await this.promiseEmptyTabInitialized;
-    this._resolveEmptyTabInitialized = null;
-    this.promiseEmptyTabInitialized = null;
     if (currentTab.pinned) {
       this.selectEmptyTab();
       try {
@@ -640,8 +640,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       if (
         (currentTab.isEmpty &&
           (currentTab.getAttribute('image') === gPageIcons[currentTabURL] || !currentTab.hasAttribute('image'))) ||
-        currentTab.hasAttribute('zen-empty-tab') ||
-        (currentTab._possibleEmptyTab && currentTab.isEmpty)
+        currentTab._possiblyEmpty
       ) {
         this.selectEmptyTab();
         this._removedByStartupPage = true;
@@ -651,6 +650,14 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
     if (gZenVerticalTabsManager._canReplaceNewTab && showed) {
       BrowserCommands.openTab();
+    }
+  }
+
+  handleInitialTab(tab, isEmpty) {
+    if (isEmpty) {
+      tab._possiblyEmpty = true;
+    } else {
+      this._initialTab = tab;
     }
   }
 
