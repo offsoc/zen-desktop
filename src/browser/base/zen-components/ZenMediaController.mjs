@@ -34,10 +34,16 @@ class ZenMediaController {
       if (this._currentBrowser) {
         if (event.target.linkedBrowser.browserId === this._currentBrowser.browserId) {
           gZenUIManager.motion
-            .animate(this.mediaControlBar, {
-              opacity: [1, 0],
-              y: [0, 10],
-            })
+            .animate(
+              this.mediaControlBar,
+              {
+                opacity: [1, 0],
+                y: [0, 10],
+              },
+              {
+                duration: 0.1,
+              }
+            )
             .then(() => {
               this.mediaControlBar.setAttribute('hidden', 'true');
             });
@@ -46,6 +52,7 @@ class ZenMediaController {
           window.requestAnimationFrame(() => {
             this.mediaControlBar.style.height =
               this.mediaControlBar.querySelector('toolbaritem').getBoundingClientRect().height + 'px';
+            this.mediaControlBar.style.opacity = 0;
             gZenUIManager.motion.animate(
               this.mediaControlBar,
               {
@@ -92,10 +99,16 @@ class ZenMediaController {
     }
 
     gZenUIManager.motion
-      .animate(this.mediaControlBar, {
-        opacity: [1, 0],
-        y: [0, 10],
-      })
+      .animate(
+        this.mediaControlBar,
+        {
+          opacity: [1, 0],
+          y: [0, 10],
+        },
+        {
+          duration: 0.1,
+        }
+      )
       .then(() => {
         this.mediaControlBar.setAttribute('hidden', 'true');
         gZenUIManager.updateTabsToolbar();
