@@ -290,3 +290,23 @@
     transform: scale(1);
   }
 }
+
+@keyframes zen-back-and-forth-text {
+  0%,
+  20% {
+    transform: translateX(0);
+    left: 0;
+  }
+
+  50%,
+  60% {
+    transform: translateX(calc(-100% - 5px));
+    left: 100%;
+  }
+
+  80%,
+  100% {
+    transform: translateX(0);
+    left: 0;
+  }
+}

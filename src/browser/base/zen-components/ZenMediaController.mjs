@@ -168,7 +168,20 @@ class ZenMediaController {
         },
         {}
       );
+      this.addLabelOverflows();
     });
+  }
+
+  addLabelOverflows() {
+    const elements = [this.mediaTitle, this.mediaArtist];
+    for (const element of elements) {
+      const parent = element.parentElement;
+      if (element.scrollWidth > parent.clientWidth) {
+        element.setAttribute('overflow', '');
+      } else {
+        element.removeAttribute('overflow');
+      }
+    }
   }
 
   setupMediaController(mediaController, browser) {
