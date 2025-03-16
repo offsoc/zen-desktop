@@ -471,7 +471,7 @@ class ZenMediaController {
   onControllerClose() {
     this._currentMediaController?.pause();
     this.switchController(true);
-    this.deinitMediaController(this._currentMediaController, true, true, true);
+    this.deinitMediaController(this._currentMediaController);
   }
 
   onMediaPip() {
