@@ -15,6 +15,8 @@
 
   #zen-media-buttons-hbox {
     align-items: start;
+    margin-top: -4px;
+    --toolbarbutton-outer-padding: 2px;
   }
 
   &:not([can-pip]) {
@@ -91,12 +93,12 @@
   & #zen-media-focus-button::after {
     content: '';
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 110%;
+    height: 110%;
     background-repeat: no-repeat;
     opacity: 1;
     background: url('chrome://browser/content/zen-images/note-indicator.svg') no-repeat;
-    top: -50%;
+    top: -70%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 0;
@@ -115,6 +117,13 @@
       opacity 0.2s ease,
       transform 0.2s ease;
     position: relative;
+
+    & image {
+      &:-moz-broken {
+        content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3C/svg%3E") !important;
+        background: color-mix(in srgb, var(--zen-primary-color) 70%, transparent 30%);
+      }
+    }
   }
 
   toolbaritem {
@@ -139,10 +148,10 @@
     padding: 0 6px;
     pointer-events: none;
     transition:
-      max-height 0.3s ease,
-      opacity 0.3s ease,
-      transform 0.3s ease,
-      padding 0.3s ease;
+      max-height 0.2s ease,
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      padding 0.2s ease;
   }
 
   #zen-media-current-time,
@@ -196,13 +205,13 @@
 #zen-media-info-vbox {
   #zen-media-controls-toolbar:not([media-position-hidden='true']) & {
     transition-delay: 0.01s !important;
-    transform: translateY(-0.4rem);
   }
   overflow-x: hidden;
   overflow-x: visible;
   white-space: nowrap;
   /* Overflow inner box shadow from the left to simulate overflow */
   mask-image: linear-gradient(to left, transparent, var(--zen-media-control-bg) 0.6em);
+  min-width: 1px;
 
   &::before {
     content: '';
@@ -220,7 +229,6 @@
     min-height: 16px;
     margin-left: 0;
     font-weight: 500;
-    animation: zen-marquee-h 10s ease-in-out infinite;
   }
 }
 
@@ -249,10 +257,13 @@
   --toolbarbutton-outer-padding: 0;
 }
 
+#zen-media-info-container {
+  padding-right: 0 !important;
+}
+
 #zen-media-controls-toolbar[can-pip] {
   #zen-media-info-vbox {
-    width: calc(100% - 58px);
-    flex-shrink: 0;
+    flex-shrink: 1;
   }
 
   #zen-media-pip-button {
