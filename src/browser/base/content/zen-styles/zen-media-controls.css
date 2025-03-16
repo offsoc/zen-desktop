@@ -13,6 +13,21 @@
     color: white;
   }
 
+  #zen-media-buttons-hbox {
+    align-items: start;
+  }
+
+  &:not([can-pip]) {
+    #zen-media-info-vbox {
+      width: calc(100% - 26px);
+      flex-shrink: 0;
+    }
+
+    #zen-media-pip-button {
+      display: none;
+    }
+  }
+
   #zen-media-prev-button,
   #zen-media-play-pause-button,
   #zen-media-next-button {
@@ -232,6 +247,17 @@
   justify-content: space-between;
   max-width: 100%;
   --toolbarbutton-outer-padding: 0;
+}
+
+#zen-media-controls-toolbar[can-pip] {
+  #zen-media-info-vbox {
+    width: calc(100% - 58px);
+    flex-shrink: 0;
+  }
+
+  #zen-media-pip-button {
+    display: flex;
+  }
 }
 
 :root:not([zen-sidebar-expanded='true']) {
