@@ -323,6 +323,8 @@ class ZenMediaController {
     }
 
     if (this.mediaControllersMap.size === 1) timeout = 0;
+    if (this.mediaControlBar.hasAttribute('hidden')) timeout = 0;
+
     this._controllerSwitchTimeout = setTimeout(() => {
       if (!this._currentMediaController?.isPlaying || force) {
         const nextController = Array.from(this.mediaControllersMap.values())
