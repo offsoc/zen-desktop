@@ -6,10 +6,20 @@
   <toolbaritem>
     <vbox id="zen-media-main-vbox">
       <vbox>
-        <vbox id="zen-media-info-vbox" class="show-on-hover">
-          <label id="zen-media-title" fadein="true"/>
-          <label id="zen-media-artist" fadein="true"/>
-        </vbox>
+        <hbox id="zen-media-info-container" class="show-on-hover">
+          <vbox id="zen-media-info-vbox">
+            <label id="zen-media-title" fadein="true"/>
+            <label id="zen-media-artist" fadein="true"/>
+          </vbox>
+          <hbox id="zen-media-buttons-hbox">
+            <toolbarbutton id="zen-media-pip-button"
+              class="toolbarbutton-1"
+              oncommand="gZenMediaController.onMediaPip();" />
+            <toolbarbutton id="zen-media-close-button"
+              class="toolbarbutton-1"
+              oncommand="gZenMediaController.onControllerClose();" />
+          </hbox>
+        </hbox>
         <hbox id="zen-media-progress-hbox"  class="show-on-hover">
           <label id="zen-media-current-time">0:00</label>
           <html:input type="range" id="zen-media-progress-bar"
