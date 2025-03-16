@@ -68,6 +68,19 @@ class ZenMediaController {
     });
 
     window.addEventListener('DOMAudioPlaybackStarted', (event) => {
+      setTimeout(() => {
+        if (
+          this._currentMediaController?.isPlaying &&
+          this.mediaControlBar.hasAttribute('hidden') &&
+          !this.mediaControlBar.hasAttribute('pip')
+        ) {
+          const { selectedBrowser } = gBrowser;
+          if (selectedBrowser.browserId !== this._currentBrowser.browserId) {
+            this.showMediaControls();
+          }
+        }
+      }, 1000);
+
       this.activateMediaControls(event.target.browsingContext.mediaController, event.target);
     });
 
@@ -231,6 +244,7 @@ class ZenMediaController {
    */
   activateMediaControls(mediaController, browser) {
     this.updateMuteState();
+    this.switchController();
 
     if (!mediaController.isActive || this._currentBrowser?.browserId === browser.browserId) return;
 
@@ -244,8 +258,7 @@ class ZenMediaController {
       lastUpdated: Date.now(),
     });
 
-    if (this._currentBrowser) this.switchController();
-    else {
+    if (!this._currentBrowser) {
       this.setupMediaController(mediaController, browser);
       this.setupMediaControlUI(metadata, positionState);
     }
@@ -323,8 +336,6 @@ class ZenMediaController {
     }
 
     if (this.mediaControllersMap.size === 1) timeout = 0;
-    if (this.mediaControlBar.hasAttribute('hidden')) timeout = 0;
-
     this._controllerSwitchTimeout = setTimeout(() => {
       if (!this._currentMediaController?.isPlaying || force) {
         const nextController = Array.from(this.mediaControllersMap.values())
