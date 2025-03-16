@@ -101,7 +101,7 @@ yay -S zen-browser-bin
 - `Tarball` install:
 
 ```sh
-bash <(curl -s https://updates.zen-browser.app/install.sh)`
+bash <(curl -s https://updates.zen-browser.app/install.sh)
 ```
 
 - `AppImage` install:
