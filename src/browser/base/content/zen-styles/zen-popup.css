@@ -362,7 +362,7 @@ menuitem {
     border-radius: 12px;
     background: linear-gradient(170deg, light-dark(rgb(187, 187, 187), rgb(240, 240, 240)) -40%, var(--zen-primary-color) 140%);
     color: var(--button-primary-color);
-    box-shadow: 0 0 16px 3px rgba(0,0,0,.1);
+    box-shadow: 0 0 16px 3px rgba(0, 0, 0, 0.1);
     display: flex;
     font-weight: 500;
     gap: 5px;
