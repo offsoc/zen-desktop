@@ -41,10 +41,13 @@ var gZenCompactModeManager = {
     // Clear hover states when window state changes (minimize, maximize, etc.)
     window.addEventListener('sizemodechange', () => this._clearAllHoverStates());
 
-    window.addEventListener('mouseover', () => {
-      const buttons = gZenVerticalTabsManager.actualWindowButtons;
-      buttons.removeAttribute('zen-has-hover');
-    });
+    if (AppConstants.platform == 'macosx') {
+      window.addEventListener('mouseover', (event) => {
+        const buttons = gZenVerticalTabsManager.actualWindowButtons;
+        if (event.target.closest('.titlebar-buttonbox-container') === buttons) return;
+        buttons.removeAttribute('zen-has-hover');
+      });
+    }
   },
 
   get preference() {
