@@ -40,6 +40,11 @@ var gZenCompactModeManager = {
 
     // Clear hover states when window state changes (minimize, maximize, etc.)
     window.addEventListener('sizemodechange', () => this._clearAllHoverStates());
+
+    window.addEventListener('mouseenter', (event) => {
+      const buttons = gZenVerticalTabsManager.actualWindowButtons;
+      buttons.removeAttribute('zen-has-hover');
+    });
   },
 
   get preference() {
@@ -363,13 +368,14 @@ var gZenCompactModeManager = {
       let target = this.hoverableElements[i].element;
       const onEnter = (event) => {
         if (event.type === 'mouseenter' && !event.target.matches(':hover')) return;
+        // Dont register the hover if the urlbar is floating and we are hovering over it
+        if (event.target.querySelector('#urlbar[zen-floating-urlbar]')) return;
         this.clearFlashTimeout('has-hover' + target.id);
         window.requestAnimationFrame(() => target.setAttribute('zen-has-hover', 'true'));
       };
 
       const onLeave = (event) => {
         if (AppConstants.platform == 'macosx') {
-          const buttonRect = gZenVerticalTabsManager.actualWindowButtons.getBoundingClientRect();
           const MAC_WINDOW_BUTTONS_X_BORDER = buttonRect.width + buttonRect.x;
           const MAC_WINDOW_BUTTONS_Y_BORDER = buttonRect.height + buttonRect.y;
           if (

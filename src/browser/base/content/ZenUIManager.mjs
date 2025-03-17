@@ -261,6 +261,10 @@ var gZenUIManager = {
       this._toastContainer.setAttribute('hidden', 'true');
     }
   },
+
+  get panelUIPosition() {
+    return gZenVerticalTabsManager._hasSetSingleToolbar ? 'bottomleft topleft' : 'bottomright topright';
+  },
 };
 
 var gZenVerticalTabsManager = {
