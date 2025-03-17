@@ -59,6 +59,7 @@ class ZenMediaController {
 
     window.addEventListener('TabClose', (event) => {
       const linkedBrowser = event.target.linkedBrowser;
+      if (!linkedBrowser?.browsingContext?.mediaController) return;
       this.deinitMediaController(
         linkedBrowser.browsingContext.mediaController,
         true,
@@ -109,7 +110,7 @@ class ZenMediaController {
       mediaController.removeEventListener('deactivated', this.onDeactivated);
 
       this.mediaControllersMap.delete(mediaController.id);
-      this.pipEligibilityMap.delete(retrievedMediaController.browser.browserId);
+      this.pipEligibilityMap.delete(retrievedMediaController?.browser?.browserId);
     }
 
     if (shouldOverride) {
