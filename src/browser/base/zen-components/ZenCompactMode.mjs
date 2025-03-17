@@ -41,7 +41,7 @@ var gZenCompactModeManager = {
     // Clear hover states when window state changes (minimize, maximize, etc.)
     window.addEventListener('sizemodechange', () => this._clearAllHoverStates());
 
-    window.addEventListener('mouseenter', (event) => {
+    window.addEventListener('mouseover', () => {
       const buttons = gZenVerticalTabsManager.actualWindowButtons;
       buttons.removeAttribute('zen-has-hover');
     });
@@ -376,6 +376,7 @@ var gZenCompactModeManager = {
 
       const onLeave = (event) => {
         if (AppConstants.platform == 'macosx') {
+          const buttonRect = gZenVerticalTabsManager.actualWindowButtons.getBoundingClientRect();
           const MAC_WINDOW_BUTTONS_X_BORDER = buttonRect.width + buttonRect.x;
           const MAC_WINDOW_BUTTONS_Y_BORDER = buttonRect.height + buttonRect.y;
           if (
