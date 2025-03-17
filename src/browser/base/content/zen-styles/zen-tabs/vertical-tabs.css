@@ -255,13 +255,20 @@
   }
 
   & .tabbrowser-tab {
-    transition: scale 0.07s ease;
+    &,
+    & .tab-content > image {
+      transition: scale 0.07s ease;
+    }
 
     &[zen-empty-tab] {
       display: none;
     }
 
-    #tabbrowser-tabs:not([movingtab]) &:active {
+    #tabbrowser-tabs:not([movingtab]) &:active:not(:has(.tab-content > image:active)) {
+      scale: var(--zen-active-tab-scale);
+    }
+
+    #tabbrowser-tabs:not([movingtab]) & .tab-content > image:active {
       scale: var(--zen-active-tab-scale);
     }
 
@@ -460,10 +467,6 @@
 
   & #nav-bar {
     margin-top: 0;
-  }
-
-  & #zen-workspaces-button[as-button='true'] {
-    width: calc(100% - 10px) !important;
   }
 
   & .zen-current-workspace-indicator-icon[no-icon='true'] {
@@ -762,14 +765,6 @@
   }
   & #zen-workspaces-button {
     flex-direction: column;
-    &:not([as-button='true']) {
-      & toolbarbutton {
-        &[active='true']::after {
-          bottom: 50% !important;
-          transform: translateY(50%) !important;
-        }
-      }
-    }
   }
 }
 

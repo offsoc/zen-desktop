@@ -77,7 +77,7 @@ var gZenCompactModeManager = {
   },
 
   get sidebarIsOnRight() {
-    if (this._sidebarIsOnRight) {
+    if (typeof this._sidebarIsOnRight !== 'undefined') {
       return this._sidebarIsOnRight;
     }
     this._sidebarIsOnRight = Services.prefs.getBoolPref('zen.tabs.vertical.right-side');
@@ -342,9 +342,9 @@ var gZenCompactModeManager = {
   },
 
   flashElement(element, duration, id, attrName = 'flash-popup') {
-    if (element.matches(':hover')) {
-      return;
-    }
+    //if (element.matches(':hover')) {
+    //  return;
+    //}
     if (this._flashTimeouts[id]) {
       clearTimeout(this._flashTimeouts[id]);
     } else {

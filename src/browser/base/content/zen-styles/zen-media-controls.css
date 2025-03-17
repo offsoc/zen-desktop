@@ -71,6 +71,12 @@
       height: calc(var(--progress-height) * 2);
       border-radius: 50%;
       cursor: pointer;
+      transform: scale(0);
+      transition: transform 0.15s ease-out;
+    }
+
+    &:hover::-moz-range-thumb {
+      transform: scale(1);
     }
   }
 
@@ -121,8 +127,8 @@
     }
   }
 
-  toolbaritem {
-    --zen-media-control-bg: light-dark(rgb(255, 255, 255), rgb(10, 10, 10)) !important;
+  & > toolbaritem {
+    --zen-media-control-bg: light-dark(rgba(255, 255, 255, 0.87), rgba(0, 0, 0, 0.87));
     flex-grow: 1;
     padding: 0;
     transition: padding 0.3s ease-out;
@@ -131,9 +137,11 @@
     bottom: 0;
     padding: 4px 6px;
     border-radius: var(--border-radius-medium);
-    background: var(--zen-media-control-bg) !important;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: var(--zen-media-control-bg);
+    backdrop-filter: saturate(3) contrast(2) blur(10px);
     width: 100%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    will-change: transform;
   }
 
   .show-on-hover {
@@ -227,7 +235,7 @@
     position: relative; /* For the animation */
 
     &[overflow] {
-      animation: zen-back-and-forth-text 8s infinite ease-in-out;
+      animation: zen-back-and-forth-text 10s infinite ease-in-out;
     }
   }
 }

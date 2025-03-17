@@ -146,6 +146,10 @@ class ZenMediaController {
     if (!this.mediaControlBar.hasAttribute('hidden')) return;
 
     this.updatePipButton();
+    const mediaInfoElements = [this.mediaTitle, this.mediaArtist];
+    for (const element of mediaInfoElements) {
+      element.removeAttribute('overflow'); // So we can properly recalculate the overflow
+    }
 
     this.mediaControlBar.removeAttribute('hidden');
     window.requestAnimationFrame(() => {
@@ -161,12 +165,11 @@ class ZenMediaController {
         },
         {}
       );
-      this.addLabelOverflows();
+      this.addLabelOverflows(mediaInfoElements);
     });
   }
 
-  addLabelOverflows() {
-    const elements = [this.mediaTitle, this.mediaArtist];
+  addLabelOverflows(elements) {
     for (const element of elements) {
       const parent = element.parentElement;
       if (element.scrollWidth > parent.clientWidth) {
