@@ -374,7 +374,7 @@ class ZenMediaController {
   }
 
   _onMetadataChange(event) {
-    if (event.target.id !== this._currentMediaController.id) return;
+    if (event.target.id !== this._currentMediaController?.id) return;
     this.updatePipButton();
 
     const metadata = event.target.getMetadata();
@@ -383,7 +383,7 @@ class ZenMediaController {
   }
 
   _onPictureInPictureModeChange(event) {
-    if (event.target.id !== this._currentMediaController.id) return;
+    if (event.target.id !== this._currentMediaController?.id) return;
     if (event.target.isBeingUsedInPIPModeOrFullscreen) {
       this.hideMediaControls();
       this.mediaControlBar.setAttribute('pip', '');
