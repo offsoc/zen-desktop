@@ -35,6 +35,7 @@ class ZenMediaController {
     this.onSupportedKeysChange = this._onSupportedKeysChange.bind(this);
     this.onMetadataChange = this._onMetadataChange.bind(this);
     this.onDeactivated = this._onDeactivated.bind(this);
+    this.onPipModeChange = this._onPictureInPictureModeChange.bind(this);
 
     window.addEventListener('TabSelect', (event) => {
       const linkedBrowser = event.target.linkedBrowser;
@@ -87,21 +88,13 @@ class ZenMediaController {
     window.addEventListener('DOMAudioPlaybackStopped', () => this.updateMuteState());
   }
 
-  /**
-   * Deinitializes a media controller, removing all event listeners and resetting state.
-   * @param {Object} mediaController - The media controller to deinitialize.
-   */
   async deinitMediaController(mediaController, shouldForget = true, shouldOverride = true, shouldHide = true) {
     if (!mediaController) return;
 
     const retrievedMediaController = this.mediaControllersMap.get(mediaController.id);
 
-    if (this.tabObserver && shouldOverride) {
-      this.tabObserver.disconnect();
-      this.tabObserver = null;
-    }
-
     if (shouldForget) {
+      mediaController.removeEventListener('pictureinpicturemodechange', this.onPipModeChange);
       mediaController.removeEventListener('positionstatechange', this.onPositionstateChange);
       mediaController.removeEventListener('playbackstatechange', this.onPlaybackstateChange);
       mediaController.removeEventListener('supportedkeyschange', this.onSupportedKeysChange);
@@ -148,10 +141,9 @@ class ZenMediaController {
   }
 
   showMediaControls() {
-    const tab = gBrowser.getTabForBrowser(this._currentBrowser);
-    if (tab.hasAttribute('pictureinpicture')) return this.hideMediaControls();
-
+    if (this._currentMediaController.isBeingUsedInPIPModeOrFullscreen) return this.hideMediaControls();
     if (!this.mediaControlBar.hasAttribute('hidden')) return;
+
     this.updatePipButton();
 
     this.mediaControlBar.removeAttribute('hidden');
@@ -190,27 +182,6 @@ class ZenMediaController {
 
     this.updatePipButton();
 
-    this.tabObserver = new MutationObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.target.hasAttribute('pictureinpicture')) {
-          this.hideMediaControls();
-          this.mediaControlBar.setAttribute('pip', '');
-        } else {
-          const { selectedBrowser } = gBrowser;
-          if (selectedBrowser.browserId !== this._currentBrowser.browserId) {
-            this.showMediaControls();
-          }
-
-          this.mediaControlBar.removeAttribute('pip');
-        }
-      }
-    });
-
-    this.tabObserver.observe(gBrowser.getTabForBrowser(browser), {
-      attributes: true,
-      attributeFilter: ['pictureinpicture'],
-    });
-
     const positionState = mediaController.getPositionState();
     this.mediaControllersMap.set(mediaController.id, {
       controller: mediaController,
@@ -221,11 +192,6 @@ class ZenMediaController {
     });
   }
 
-  /**
-   * Sets up the media control UI with metadata and position state.
-   * @param {Object} metadata - The media metadata (title, artist, etc.).
-   * @param {Object} positionState - The position state (position, duration).
-   */
   setupMediaControlUI(metadata, positionState) {
     this.updatePipButton();
 
@@ -251,10 +217,6 @@ class ZenMediaController {
     }
   }
 
-  /**
-   * @param {Object} mediaController - The media controller to activate.
-   * @param {Object} browser - The browser associated with the media controller.
-   */
   activateMediaControls(mediaController, browser) {
     this.updateMuteState();
     this.switchController();
@@ -276,6 +238,7 @@ class ZenMediaController {
       this.setupMediaControlUI(metadata, positionState);
     }
 
+    mediaController.addEventListener('pictureinpicturemodechange', this.onPipModeChange);
     mediaController.addEventListener('positionstatechange', this.onPositionstateChange);
     mediaController.addEventListener('playbackstatechange', this.onPlaybackstateChange);
     mediaController.addEventListener('supportedkeyschange', this.onSupportedKeysChange);
@@ -287,18 +250,11 @@ class ZenMediaController {
     this.pipEligibilityMap.set(browser.browserId, isEligible);
   }
 
-  /**
-   * @param {Event} event - The deactivation event.
-   */
   _onDeactivated(event) {
     this.deinitMediaController(event.target, true, event.target.id === this._currentMediaController.id, true);
     this.switchController();
   }
 
-  /**
-   * Updates playback state and UI based on changes.
-   * @param {Event} event - The playback state change event.
-   */
   _onPlaybackstateChange() {
     if (this._currentMediaController?.isPlaying) {
       this.mediaControlBar.classList.add('playing');
@@ -308,24 +264,16 @@ class ZenMediaController {
     }
   }
 
-  /**
-   * Updates supported keys in the UI.
-   * @param {Event} event - The supported keys change event.
-   */
   _onSupportedKeysChange(event) {
-    if (event.target !== this._currentMediaController) return;
+    if (event.target.id !== this._currentMediaController?.id) return;
     for (const key of this.supportedKeys) {
       const button = this.mediaControlBar.querySelector(`#zen-media-${key}-button`);
       button.disabled = !event.target.supportedKeys.includes(key);
     }
   }
 
-  /**
-   * Updates position state and UI when the media position changes.
-   * @param {Event} event - The position state change event.
-   */
   _onPositionstateChange(event) {
-    if (event.target !== this._currentMediaController) {
+    if (event.target.id !== this._currentMediaController?.id) {
       const mediaController = this.mediaControllersMap.get(event.target.id);
       this.mediaControllersMap.set(event.target.id, {
         ...mediaController,
@@ -362,7 +310,7 @@ class ZenMediaController {
           .shift();
 
         if (nextController) {
-          this.deinitMediaController(this._currentMediaController, false, true, false).then(() => {
+          this.deinitMediaController(this._currentMediaController, false, true).then(() => {
             this.setupMediaController(nextController.controller, nextController.browser);
             const elapsedTime = Math.floor((Date.now() - nextController.lastUpdated) / 1000);
 
@@ -380,9 +328,6 @@ class ZenMediaController {
     }, timeout);
   }
 
-  /**
-   * Updates the media progress bar and time display.
-   */
   updateMediaPosition() {
     if (this._mediaUpdateInterval) {
       clearInterval(this._mediaUpdateInterval);
@@ -413,11 +358,6 @@ class ZenMediaController {
     }, 1000);
   }
 
-  /**
-   * Formats seconds into a hours:minutes:seconds string.
-   * @param {number} seconds - The time in seconds.
-   * @returns {string} Formatted time string.
-   */
   formatSecondsToTime(seconds) {
     if (!seconds || isNaN(seconds)) return '0:00';
 
@@ -433,17 +373,28 @@ class ZenMediaController {
     return `${minutes}:${secs.padStart(2, '0')}`;
   }
 
-  /**
-   * Updates metadata in the UI.
-   * @param {Event} event - The metadata change event.
-   */
   _onMetadataChange(event) {
-    if (event.target !== this._currentMediaController) return;
+    if (event.target.id !== this._currentMediaController.id) return;
     this.updatePipButton();
 
     const metadata = event.target.getMetadata();
     this.mediaTitle.textContent = metadata.title || '';
     this.mediaArtist.textContent = metadata.artist || '';
+  }
+
+  _onPictureInPictureModeChange(event) {
+    if (event.target.id !== this._currentMediaController.id) return;
+    if (event.target.isBeingUsedInPIPModeOrFullscreen) {
+      this.hideMediaControls();
+      this.mediaControlBar.setAttribute('pip', '');
+    } else {
+      const { selectedBrowser } = gBrowser;
+      if (selectedBrowser.browserId !== this._currentBrowser.browserId) {
+        this.showMediaControls();
+      }
+
+      this.mediaControlBar.removeAttribute('pip');
+    }
   }
 
   onMediaPlayPrev() {
