@@ -269,7 +269,7 @@
     }
 
     #tabbrowser-tabs:not([movingtab]) & .tab-content > image:active {
-      scale: var(--zen-active-tab-scale);
+      scale: 0.92;
     }
 
     & .tab-icon-image {
