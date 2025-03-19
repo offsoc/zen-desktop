@@ -834,7 +834,7 @@
     removeTabContainersDragoverClass() {
       this.dragIndicator.remove();
       this._dragIndicator = null;
-      ZenWorkspaces.activeWorkspaceIndicator.removeAttribute('open');
+      ZenWorkspaces.activeWorkspaceIndicator?.removeAttribute('open');
     }
 
     get dragIndicator() {
@@ -894,9 +894,9 @@
       targetTab = targetTab?.group || targetTab;
       if (event.target.closest('.zen-current-workspace-indicator')) {
         this.removeTabContainersDragoverClass();
-        ZenWorkspaces.activeWorkspaceIndicator.setAttribute('open', true);
+        ZenWorkspaces.activeWorkspaceIndicator?.setAttribute('open', true);
       } else {
-        ZenWorkspaces.activeWorkspaceIndicator.removeAttribute('open');
+        ZenWorkspaces.activeWorkspaceIndicator?.removeAttribute('open');
       }
 
       // If there's no valid target tab, nothing to do
