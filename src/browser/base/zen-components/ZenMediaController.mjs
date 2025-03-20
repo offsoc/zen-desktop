@@ -21,6 +21,8 @@ class ZenMediaController {
   _controllerSwitchTimeout = null;
 
   init() {
+    if (!Services.prefs.getBoolPref('zen.mediacontrols.enabled', true)) return;
+
     this.mediaTitle = document.querySelector('#zen-media-title');
     this.mediaArtist = document.querySelector('#zen-media-artist');
     this.mediaControlBar = document.querySelector('#zen-media-controls-toolbar');
@@ -58,16 +60,8 @@ class ZenMediaController {
       }
     });
 
-    window.addEventListener('TabClose', (event) => {
-      const linkedBrowser = event.target.linkedBrowser;
-      if (!linkedBrowser?.browsingContext?.mediaController) return;
-      this.deinitMediaController(
-        linkedBrowser.browsingContext.mediaController,
-        true,
-        linkedBrowser.browserId === this._currentBrowser?.browserId,
-        true
-      );
-    });
+    const onTabDiscardedOrClosed = this.onTabDiscardedOrClosed.bind(this);
+    window.addEventListener('TabClose', onTabDiscardedOrClosed);
 
     window.addEventListener('DOMAudioPlaybackStarted', (event) => {
       setTimeout(() => {
@@ -87,6 +81,17 @@ class ZenMediaController {
     });
 
     window.addEventListener('DOMAudioPlaybackStopped', () => this.updateMuteState());
+  }
+
+  onTabDiscardedOrClosed(event) {
+    const linkedBrowser = event.target.linkedBrowser;
+    if (!linkedBrowser?.browsingContext?.mediaController) return;
+    this.deinitMediaController(
+      linkedBrowser.browsingContext.mediaController,
+      true,
+      linkedBrowser.browserId === this._currentBrowser?.browserId,
+      true
+    );
   }
 
   async deinitMediaController(mediaController, shouldForget = true, shouldOverride = true, shouldHide = true) {

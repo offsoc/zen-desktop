@@ -474,9 +474,6 @@
   }
 
   & #zen-workspaces-button {
-    margin-left: 2px;
-    margin-right: 2px;
-
     & .zen-workspace-sidebar-icon[no-icon='true'] {
       display: none;
     }

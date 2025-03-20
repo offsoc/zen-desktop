@@ -90,6 +90,8 @@ pref('zen.tabs.show-newtab-vertical', true);
 pref('zen.view.show-newtab-button-border-top', false);
 pref('zen.view.show-newtab-button-top', true);
 
+perf('zen.mediacontrols.enabled', true);
+
 #ifdef MOZILLA_OFFICIAL
 pref('zen.rice.api.url', 'https://share.zen-browser.app', locked);
 pref('zen.injections.match-urls', 'https://zen-browser.app/*,https://share.zen-browser.app/*', locked);
@@ -199,7 +201,6 @@ pref('zen.startup.smooth-scroll-in-tabs', true);
 
 // Zen Workspaces
 pref('zen.workspaces.disabled_for_testing', false);
-pref('zen.workspaces.hide-deactivated-workspaces', false);
 pref('zen.workspaces.hide-default-container-indicator', true);
 pref('zen.workspaces.force-container-workspace', false);
 pref('zen.workspaces.open-new-tab-if-last-unpinned-tab-is-closed', false);
