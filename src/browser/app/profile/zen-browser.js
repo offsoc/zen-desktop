@@ -90,6 +90,8 @@ pref('zen.tabs.show-newtab-vertical', true);
 pref('zen.view.show-newtab-button-border-top', false);
 pref('zen.view.show-newtab-button-top', true);
 
+perf('zen.mediacontrols.enabled', true);
+
 #ifdef MOZILLA_OFFICIAL
 pref('zen.rice.api.url', 'https://share.zen-browser.app', locked);
 pref('zen.injections.match-urls', 'https://zen-browser.app/*,https://share.zen-browser.app/*', locked);
