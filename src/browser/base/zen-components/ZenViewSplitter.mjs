@@ -230,7 +230,6 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       const halfWidth = panelsWidth / 2;
       const side = event.clientX > halfWidth ? 'right' : 'left';
       this.fakeBrowser = document.createXULElement('vbox');
-      this.fakeBrowser.addEventListener('dragleave', this.onBrowserDragEndToSplit);
       window.addEventListener('dragend', this.onBrowserDragEndToSplit, { once: true });
       const padding = Services.prefs.getIntPref('zen.theme.content-element-separation', 0);
       this.fakeBrowser.setAttribute('flex', '1');
@@ -277,6 +276,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       ]);
       if (this._finishAllAnimatingPromise) {
         this._finishAllAnimatingPromise.then(() => {
+          this.fakeBrowser.addEventListener('dragleave', this.onBrowserDragEndToSplit);
           this._canDrop = true;
           draggedTab._visuallySelected = true;
         });

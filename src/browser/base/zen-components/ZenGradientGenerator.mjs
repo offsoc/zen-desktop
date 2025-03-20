@@ -870,8 +870,11 @@
       if (color.isCustom) {
         return color.c;
       }
-      const toolbarBg = forToolbar ? this.getToolbarModifiedBase() : 'var(--zen-themed-toolbar-bg-transparent)';
-      return `color-mix(in srgb, rgb(${color.c[0]}, ${color.c[1]}, ${color.c[2]}) ${this.currentOpacity * 100}%, ${toolbarBg} ${(1 - this.currentOpacity) * 100}%)`;
+      if (forToolbar) {
+        const toolbarBg = this.getToolbarModifiedBase();
+        return `color-mix(in srgb, rgb(${color.c[0]}, ${color.c[1]}, ${color.c[2]}) ${this.currentOpacity * 100}%, ${toolbarBg} ${(1 - this.currentOpacity) * 100}%)`;
+      }
+      return `rgba(${color.c[0]}, ${color.c[1]}, ${color.c[2]}, ${this.currentOpacity})`;
     }
 
     getGradient(colors, forToolbar = false) {

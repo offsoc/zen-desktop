@@ -21,6 +21,8 @@ class ZenMediaController {
   _controllerSwitchTimeout = null;
 
   init() {
+    if (!Services.prefs.getBoolPref('zen.mediacontrols.enabled', true)) return;
+
     this.mediaTitle = document.querySelector('#zen-media-title');
     this.mediaArtist = document.querySelector('#zen-media-artist');
     this.mediaControlBar = document.querySelector('#zen-media-controls-toolbar');
@@ -138,6 +140,7 @@ class ZenMediaController {
       .then(() => {
         this.mediaControlBar.setAttribute('hidden', 'true');
         gZenUIManager.updateTabsToolbar();
+        gZenUIManager.restoreScrollbarState();
       });
   }
 
@@ -157,6 +160,7 @@ class ZenMediaController {
         this.mediaControlBar.querySelector('toolbaritem').getBoundingClientRect().height + 'px';
       this.mediaControlBar.style.opacity = 0;
       gZenUIManager.updateTabsToolbar();
+      gZenUIManager.restoreScrollbarState();
       gZenUIManager.motion.animate(
         this.mediaControlBar,
         {
@@ -210,6 +214,7 @@ class ZenMediaController {
     this.mediaArtist.textContent = metadata.artist || '';
 
     gZenUIManager.updateTabsToolbar();
+    gZenUIManager.restoreScrollbarState();
 
     this._currentPosition = positionState.position;
     this._currentDuration = positionState.duration;
@@ -277,15 +282,15 @@ class ZenMediaController {
   }
 
   _onPositionstateChange(event) {
-    if (event.target.id !== this._currentMediaController?.id) {
-      const mediaController = this.mediaControllersMap.get(event.target.id);
-      this.mediaControllersMap.set(event.target.id, {
-        ...mediaController,
-        position: event.position,
-        duration: event.duration,
-        lastUpdated: Date.now(),
-      });
-    }
+    const mediaController = this.mediaControllersMap.get(event.target.id);
+    this.mediaControllersMap.set(event.target.id, {
+      ...mediaController,
+      position: event.position,
+      duration: event.duration,
+      lastUpdated: Date.now(),
+    });
+
+    if (event.target.id !== this._currentMediaController?.id) return;
 
     this._currentPosition = event.position;
     this._currentDuration = event.duration;

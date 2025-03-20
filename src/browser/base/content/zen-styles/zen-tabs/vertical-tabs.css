@@ -1050,14 +1050,14 @@
 #zen-essentials-container {
   padding-bottom: var(--zen-toolbox-padding);
   overflow: hidden;
-  gap: 3px;
+  gap: calc(var(--zen-toolbox-padding) - 2px);
 }
 
 #zen-essentials-container {
   overflow: hidden;
   transition: max-height 0.3s ease-out;
   opacity: 1;
-  grid-template-columns: repeat(auto-fit, minmax(48px, auto));
+  grid-template-columns: repeat(auto-fit, minmax(49px, auto));
   overflow: hidden;
   scrollbar-width: thin;
   display: grid;
