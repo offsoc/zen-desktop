@@ -271,9 +271,6 @@
         tab.attention ||
         tab.hasAttribute('glance-id') ||
         tab.linkedBrowser?.zenModeActive ||
-        (typeof extraArgs.permitUnload === 'undefined'
-          ? !tab.linkedBrowser?.permitUnload()?.permitUnload
-          : !extraArgs.permitUnload) ||
         (tab.pictureinpicture && !ignoreTimestamp) ||
         (tab.soundPlaying && !ignoreTimestamp) ||
         (tab.zenIgnoreUnload && !ignoreTimestamp) ||
@@ -283,7 +280,7 @@
         return false;
       }
       if (ignoreTimestamp) {
-        return true;
+        return this._tabPermitsUnload(tab, extraArgs);
       }
       const lastActivity = tab.lastActivity;
       if (!lastActivity) {
@@ -291,7 +288,13 @@
       }
       const diff = currentTimestamp - lastActivity;
       // Check if the tab has been inactive for more than the timeout
-      return diff > lazy.zenTabUnloaderTimeout * 60 * 1000;
+      return diff > lazy.zenTabUnloaderTimeout * 60 * 1000 && this._tabPermitsUnload(tab, extraArgs);
+    }
+
+    _tabPermitsUnload(tab, extraArgs) {
+      return typeof extraArgs.permitUnload === 'undefined'
+        ? !tab.linkedBrowser?.permitUnload()?.permitUnload
+        : !extraArgs.permitUnload;
     }
   }
 
