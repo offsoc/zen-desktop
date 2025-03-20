@@ -873,6 +873,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     await ZenWorkspacesStorage.removeWorkspace(windowID);
     await this._propagateWorkspaceData();
     await this._updateWorkspacesChangeContextMenu();
+    this.onWindowResize();
   }
 
   isWorkspaceActive(workspace) {
@@ -2379,14 +2380,16 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (!parent) {
       return;
     }
-    // Once we are overflowing, we align the buttons to always stay inside the container,
-    // meaning we need to remove the overflow attribute to reset the width
-    parent.removeAttribute('overflow');
-    const overflow = parent.scrollWidth > parent.clientWidth;
-    parent.toggleAttribute('overflow', overflow);
-    // The maximum width a button has when it overflows based on the number of buttons
-    const numButtons = parent.children.length + 1; // +1 to exclude the active button
-    const maxWidth = 100 / numButtons;
-    parent.style.setProperty('--zen-overflowed-workspace-button-width', `${maxWidth}%`);
+    window.requestAnimationFrame(() => {
+      // Once we are overflowing, we align the buttons to always stay inside the container,
+      // meaning we need to remove the overflow attribute to reset the width
+      parent.removeAttribute('overflow');
+      const overflow = parent.scrollWidth > parent.clientWidth;
+      parent.toggleAttribute('overflow', overflow);
+      // The maximum width a button has when it overflows based on the number of buttons
+      const numButtons = parent.children.length + 1; // +1 to exclude the active button
+      const maxWidth = 100 / numButtons;
+      parent.style.setProperty('--zen-overflowed-workspace-button-width', `${maxWidth}%`);
+    });
   }
 })();
