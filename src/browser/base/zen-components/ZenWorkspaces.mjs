@@ -1931,6 +1931,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       }
       await this.changeWorkspace(workspaceData);
     }
+    this.onWindowResize();
     return workspaceData;
   }
 
