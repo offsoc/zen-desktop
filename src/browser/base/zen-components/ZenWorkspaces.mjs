@@ -77,6 +77,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     );
     ChromeUtils.defineLazyGetter(this, 'tabContainer', () => document.getElementById('tabbrowser-tabs'));
     this._activeWorkspace = Services.prefs.getStringPref('zen.workspaces.active', '');
+
+    window.addEventListener('resize', this.onWindowResize.bind(this));
   }
 
   async afterLoadInit() {
@@ -599,6 +601,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       } catch (e) {
         console.error('ZenWorkspaces: Error initializing theme picker', e);
       }
+      this.onWindowResize();
       await this._selectStartPage();
       this._fixTabPositions();
       this._resolveInitialized();
@@ -2367,5 +2370,22 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     const activeWorkspace = this.activeWorkspace;
     const workspace = workspaces.workspaces.find((workspace) => workspace.uuid === activeWorkspace);
     return workspace.containerTabId;
+  }
+
+  onWindowResize() {
+    // Check if workspace icons overflow the parent container
+    const parent = document.getElementById('zen-workspaces-button');
+    if (!parent) {
+      return;
+    }
+    // Once we are overflowing, we align the buttons to always stay inside the container,
+    // meaning we need to remove the overflow attribute to reset the width
+    parent.removeAttribute('overflow');
+    const overflow = parent.scrollWidth > parent.clientWidth;
+    parent.toggleAttribute('overflow', overflow);
+    // The maximum width a button has when it overflows based on the number of buttons
+    const numButtons = parent.children.length + 1; // +1 to exclude the active button
+    const maxWidth = 100 / numButtons;
+    parent.style.setProperty('--zen-overflowed-workspace-button-width', `${maxWidth}%`);
   }
 })();

@@ -22,8 +22,6 @@
       'TabAttrModified',
       'TabPinned',
       'TabUnpinned',
-      'TabBrowserInserted',
-      'TabBrowserDiscarded',
       'TabShow',
       'TabHide',
       'TabOpen',
@@ -150,8 +148,6 @@
       switch (action) {
         case 'TabPinned':
         case 'TabUnpinned':
-        case 'TabBrowserInserted':
-        case 'TabBrowserDiscarded':
         case 'TabShow':
         case 'TabHide':
           break;
@@ -265,9 +261,9 @@
         tab.selected ||
         (tab.multiselected && !ignoreTimestamp) ||
         (tab.hasAttribute('busy') && !ignoreTimestamp) ||
-        tab.hasAttribute('pending') ||
         !tab.linkedPanel ||
         tab.splitView ||
+        tab.group?.hasAttribute('split-view-group') ||
         tab.attention ||
         tab.hasAttribute('glance-id') ||
         tab.linkedBrowser?.zenModeActive ||
@@ -293,8 +289,8 @@
 
     _tabPermitsUnload(tab, extraArgs) {
       return typeof extraArgs.permitUnload === 'undefined'
-        ? !tab.linkedBrowser?.permitUnload()?.permitUnload
-        : !extraArgs.permitUnload;
+        ? tab.linkedBrowser?.permitUnload()?.permitUnload
+        : extraArgs.permitUnload;
     }
   }
 

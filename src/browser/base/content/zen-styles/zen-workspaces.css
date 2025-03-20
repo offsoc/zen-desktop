@@ -20,10 +20,12 @@
   --toolbarbutton-hover-background: transparent !important;
   border-radius: var(--zen-button-border-radius) !important;
   background: transparent;
-  padding: 2px;
   appearance: unset !important;
   height: fit-content;
   gap: 3px;
+
+  container-type: inline-size;
+  width: 100%;
 
   & toolbarbutton {
     margin: auto;
@@ -34,8 +36,44 @@
     align-items: center;
     position: relative;
 
-    @media (-moz-bool-pref: 'zen.workspaces.hide-deactivated-workspaces') {
-      &:not([active='true']):not(:hover) {
+    & .zen-workspace-icon[no-icon='true'] {
+      width: 6px;
+      height: 6px;
+      background: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
+      border-radius: 50%;
+    }
+
+    filter: grayscale(1);
+    opacity: 0.5;
+    transition:
+      filter 0.2s,
+      opacity 0.2s,
+      width 0.1s;
+
+    &[active='true'],
+    &:hover {
+      filter: grayscale(0);
+      opacity: 1;
+    }
+
+    &:hover {
+      background-color: var(--zen-toolbar-element-bg);
+    }
+  }
+
+  &[overflow] {
+    gap: 0 !important;
+
+    & toolbarbutton {
+      margin: 0;
+    }
+
+    & toolbarbutton:not([active='true']),
+    &:has(toolbarbutton:hover) toolbarbutton[active='true'] {
+      &:not(:hover) {
+        width: min(var(--zen-overflowed-workspace-button-width), 25px);
+        min-width: 10px;
+
         &::after {
           content: '';
           position: absolute;
@@ -56,33 +94,6 @@
         & .zen-workspace-icon {
           display: none;
         }
-      }
-    }
-
-    & .zen-workspace-icon[no-icon='true'] {
-      width: 6px;
-      height: 6px;
-      background: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
-      border-radius: 50%;
-    }
-
-    @media not (-moz-bool-pref: 'zen.workspaces.hide-deactivated-workspaces') {
-      & {
-        filter: grayscale(1);
-        opacity: 0.5;
-        transition:
-          filter 0.2s,
-          opacity 0.2s;
-      }
-
-      &[active='true'],
-      &:hover {
-        filter: grayscale(0);
-        opacity: 1;
-      }
-
-      &:hover {
-        background-color: var(--zen-toolbar-element-bg);
       }
     }
   }
@@ -118,8 +129,6 @@
 
   & #zen-workspaces-button {
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     display: flex;
     gap: 0.5ch;
   }
