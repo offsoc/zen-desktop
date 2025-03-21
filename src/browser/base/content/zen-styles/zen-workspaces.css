@@ -28,7 +28,7 @@
   width: 100%;
 
   & toolbarbutton {
-    margin: auto;
+    margin: 0;
     width: 25px;
     display: flex;
     justify-content: center;
