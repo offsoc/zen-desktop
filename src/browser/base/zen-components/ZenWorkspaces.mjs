@@ -2372,7 +2372,8 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     return workspace.containerTabId;
   }
 
-  onWindowResize() {
+  onWindowResize(event = undefined) {
+    if (!(!event || event.target === window)) return;
     // Check if workspace icons overflow the parent container
     const parent = document.getElementById('zen-workspaces-button');
     if (!parent) {
