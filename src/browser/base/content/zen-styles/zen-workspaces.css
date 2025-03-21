@@ -72,7 +72,6 @@
     &:has(toolbarbutton:hover) toolbarbutton[active='true'] {
       &:not(:hover) {
         width: min(var(--zen-overflowed-workspace-button-width), 25px);
-        min-width: 10px;
 
         &::after {
           content: '';
