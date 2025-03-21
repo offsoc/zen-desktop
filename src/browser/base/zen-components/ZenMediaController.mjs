@@ -221,6 +221,8 @@ class ZenMediaController {
 
     this._currentPosition = positionState.position;
     this._currentDuration = positionState.duration;
+    this._currentPlaybackRate = positionState.playbackRate;
+
     this.updateMediaPosition();
 
     for (const key of this.supportedKeys) {
@@ -297,6 +299,8 @@ class ZenMediaController {
 
     this._currentPosition = event.position;
     this._currentDuration = event.duration;
+    this._currentPlaybackRate = event.playbackRate;
+
     this.updateMediaPosition();
   }
 
@@ -357,7 +361,7 @@ class ZenMediaController {
 
     this._mediaUpdateInterval = setInterval(() => {
       if (this._currentMediaController?.isPlaying) {
-        this._currentPosition += 1;
+        this._currentPosition += 1 * this._currentPlaybackRate;
         if (this._currentPosition > this._currentDuration) {
           this._currentPosition = this._currentDuration;
         }
