@@ -396,6 +396,13 @@ class ZenMediaController {
     const metadata = event.target.getMetadata();
     this.mediaTitle.textContent = metadata.title || '';
     this.mediaArtist.textContent = metadata.artist || '';
+
+    const mediaInfoElements = [this.mediaTitle, this.mediaArtist];
+    for (const element of mediaInfoElements) {
+      element.removeAttribute('overflow');
+    }
+
+    this.addLabelOverflows(mediaInfoElements);
   }
 
   _onPictureInPictureModeChange(event) {
