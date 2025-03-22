@@ -6,7 +6,7 @@
 [![Crowdin](https://badges.crowdin.net/zen-browser/localized.svg)](https://crowdin.com/project/zen-browser)
 [![Zen Release builds](https://github.com/zen-browser/desktop/actions/workflows/build.yml/badge.svg?branch=stable)](https://github.com/zen-browser/desktop/actions/workflows/build.yml)
 
-✨ Experience tranquillity while browsing the web without people tracking you! Zen is a privacy-focused browser that blocks trackers, ads, and other unwanted content while offering the best browsing experience!
+✨ Experience tranquillity while browsing the internet with Zen! Our mission is to give you a balance between speed, privacy and productivity
 
 <div flex="true">
   <a href="https://zen-browser.app/download">
