@@ -2291,7 +2291,11 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (!this._hasInitializedTabsStrip) {
       const children = this.tabboxChildren;
       children.pop(); // Remove the last child which is the new tab button
-      return children;
+      return [
+        ...document.querySelectorAll('#zen-essentials-container tab'),
+        ...document.querySelectorAll('#vertical-pinned-tabs-container tab'),
+        ...children,
+      ];
     }
 
     if (this._allStoredTabs) {
