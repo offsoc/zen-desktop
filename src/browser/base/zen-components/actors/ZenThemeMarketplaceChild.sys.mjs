@@ -50,7 +50,7 @@ export class ZenThemeMarketplaceChild extends JSWindowActorChild {
 
   initiateThemeMarketplace() {
     this.contentWindow.setTimeout(() => {
-      this.addIntallButtons();
+      this.addInstallButtons();
       this.injectMarkplaceAPI();
     }, 0);
   }
@@ -111,7 +111,7 @@ export class ZenThemeMarketplaceChild extends JSWindowActorChild {
     });
   }
 
-  async addIntallButtons() {
+  async addInstallButtons() {
     const actionButton = this.actionButton;
     const actionButtonUnnstall = this.actionButtonUninstall;
     const errorMessage = this.contentWindow.document.getElementById('install-theme-error');
