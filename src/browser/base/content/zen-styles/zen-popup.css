@@ -351,11 +351,18 @@ menuitem {
 #zen-toast-container {
   position: fixed;
   top: calc(var(--zen-element-separation) * 2);
-  right: calc(var(--zen-element-separation) * 2);
   z-index: 1000;
   gap: 1rem;
   display: flex;
   align-items: end;
+
+  :root:not([zen-right-side='true']) & {
+    right: calc(var(--zen-element-separation) * 2);
+  }
+
+  :root[zen-right-side='true'] & {
+    left: calc(var(--zen-element-separation) * 2);
+  }
 
   & .zen-toast {
     padding: 0.9rem 0.8rem;
