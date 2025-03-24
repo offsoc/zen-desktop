@@ -263,12 +263,13 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
   _organizeTabsToWorkspaceSections(workspace, section, pinnedSection, tabs) {
     const workspaceTabs = Array.from(tabs).filter((tab) => tab.getAttribute('zen-workspace-id') === workspace.uuid);
     let firstNormalTab = null;
-    for (const tab of workspaceTabs) {
+    for (let tab of workspaceTabs) {
       if (tab.hasAttribute('zen-essential')) {
         continue; // Ignore essentials as they need to be in their own section
       }
       // remove tab from list
       tabs.splice(tabs.indexOf(tab), 1);
+      tab = tab.group ?? tab;
       if (tab.pinned) {
         pinnedSection.insertBefore(tab, pinnedSection.nextSibling);
       } else {
@@ -2321,6 +2322,23 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     }
     this._allStoredTabs = tabs;
     return this._allStoredTabs;
+  }
+
+  get allTabGroups() {
+    if (!this._hasInitializedTabsStrip) {
+      let children = this.tabboxChildren;
+      return children.filter((node) => node.tagName == 'tab-group');
+    }
+    const pinnedContainers = document.querySelectorAll('#vertical-pinned-tabs-container .zen-workspace-tabs-section');
+    const normalContainers = document.querySelectorAll('#tabbrowser-arrowscrollbox .zen-workspace-tabs-section');
+    const containers = [...pinnedContainers, ...normalContainers];
+    const tabGroups = [];
+    for (const container of containers) {
+      for (const tabGroup of container.querySelectorAll('tab-group')) {
+        tabGroups.push(tabGroup);
+      }
+    }
+    return tabGroups;
   }
 
   get allUsedBrowsers() {

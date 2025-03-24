@@ -1722,6 +1722,33 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
 
     return null;
   }
+
+  storeDataForSessionStore() {
+    // We cant store any tab or browser elements in the session store
+    // so we need to store the tab indexes and group indexes
+    const data = this._data.map((group) => {
+      return {
+        groupId: group.tabs[0].group?.id,
+        gridType: group.gridType,
+      };
+    });
+    return data;
+  }
+
+  restoreDataFromSessionStore(data) {
+    if (!data) {
+      return;
+    }
+    // We can just get the tab group with document.getElementById(group.groupId)
+    // and add the tabs to it
+    for (const group of data) {
+      const groupElement = document.getElementById(group.groupId);
+      if (groupElement) {
+        const tabs = groupElement.querySelectorAll('tab');
+        this.splitTabs([...tabs], group.gridType);
+      }
+    }
+  }
 }
 
 window.gZenViewSplitter = new ZenViewSplitter();

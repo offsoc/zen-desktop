@@ -58,6 +58,11 @@ tab-group[split-view-group] {
       right: 50%;
       transform: translateX(50%);
     }
+
+    & .tab-content {
+      min-width: 0;
+      justify-content: unset !important;
+    }
   }
 
   &:has(> tab:is([visuallyselected], [multiselected])) {

@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index fa96568d366fd3608f9bd583fa793150bd815c8b..1c940a3b162919256ca73fa867c5c261a3395e25 100644
+index fa96568d366fd3608f9bd583fa793150bd815c8b..13a870629a98304cb18dc09b5ae075d734668f2a 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -145,7 +145,7 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1c940a3b162919256ca73fa867c5c261
      }
  
      get verticalMode() {
-@@ -1537,28 +1565,40 @@
+@@ -1537,29 +1565,41 @@
        if (this.#allTabs) {
          return this.#allTabs;
        }
@@ -189,11 +189,12 @@ index fa96568d366fd3608f9bd583fa793150bd815c8b..1c940a3b162919256ca73fa867c5c261
      }
  
      get allGroups() {
--      let children = Array.from(this.arrowScrollbox.children);
-+      let children = ZenWorkspaces.tabboxChildren;
-       return children.filter(node => node.tagName == "tab-group");
+       let children = Array.from(this.arrowScrollbox.children);
+-      return children.filter(node => node.tagName == "tab-group");
++      return ZenWorkspaces.allTabGroups;
      }
  
+     /**
 @@ -1579,7 +1619,7 @@
       */
      get visibleTabs() {
