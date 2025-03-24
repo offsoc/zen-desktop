@@ -1,5 +1,5 @@
 diff --git a/dom/html/HTMLMediaElement.cpp b/dom/html/HTMLMediaElement.cpp
-index 0b8dee1ca22b1f0ddcf7e6a976f606990104b56e..a3a5a7cfcaa8a4719e56988bc917183fa3cc9d10 100644
+index 0b8dee1ca22b1f0ddcf7e6a976f606990104b56e..db31132b67a041abf6bf3e5ed68ab20380fdc293 100644
 --- a/dom/html/HTMLMediaElement.cpp
 +++ b/dom/html/HTMLMediaElement.cpp
 @@ -455,6 +455,7 @@ class HTMLMediaElement::MediaControlKeyListener final
@@ -10,3 +10,13 @@ index 0b8dee1ca22b1f0ddcf7e6a976f606990104b56e..a3a5a7cfcaa8a4719e56988bc917183f
        NotifyAudibleStateChanged(mIsOwnerAudible
                                      ? MediaAudibleState::eAudible
                                      : MediaAudibleState::eInaudible);
+@@ -6952,6 +6953,9 @@ void HTMLMediaElement::FireTimeUpdate(TimeupdateType aType) {
+     DispatchAsyncEvent(std::move(runner));
+     mQueueTimeUpdateRunnerTime = TimeStamp::Now();
+     mLastCurrentTime = CurrentTime();
++    if (aType == TimeupdateType::eMandatory) {
++      mMediaControlKeyListener->NotifyMediaPositionState();
++    }
+   }
+   if (mFragmentEnd >= 0.0 && CurrentTime() >= mFragmentEnd) {
+     Pause();
