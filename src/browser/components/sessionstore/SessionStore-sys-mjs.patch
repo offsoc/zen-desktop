@@ -1,5 +1,5 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index f814772114948f87cbb3c3a7231c95ea1f68d776..ae35daa518ca25f4fc95ef983519c390bf088a68 100644
+index f814772114948f87cbb3c3a7231c95ea1f68d776..ee358a46956d5f09983fa98a202085bac69c8b27 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
 @@ -3171,7 +3171,7 @@ var SessionStoreInternal = {
@@ -19,7 +19,7 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..ae35daa518ca25f4fc95ef983519c390
  
        if (inBackground === false) {
          aWindow.gBrowser.selectedTab = newTab;
-@@ -5355,14 +5356,14 @@ var SessionStoreInternal = {
+@@ -5355,14 +5356,15 @@ var SessionStoreInternal = {
      }
  
      let tabbrowser = aWindow.gBrowser;
@@ -29,6 +29,7 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..ae35daa518ca25f4fc95ef983519c390
      let winData = this._windows[aWindow.__SSi];
      let tabsData = (winData.tabs = []);
  
++    winData.splitViewData = aWindow.gZenViewSplitter?.storeDataForSessionStore();
      // update the internal state data for this window
      for (let tab of tabs) {
 -      if (tab == aWindow.FirefoxViewHandler.tab) {
@@ -36,7 +37,7 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..ae35daa518ca25f4fc95ef983519c390
          continue;
        }
        let tabData = lazy.TabState.collect(tab, TAB_CUSTOM_VALUES.get(tab));
-@@ -5381,7 +5382,7 @@ var SessionStoreInternal = {
+@@ -5381,7 +5383,7 @@ var SessionStoreInternal = {
      // We don't store the Firefox View tab in Session Store, so if it was the last selected "tab" when
      // a window is closed, point to the first item in the tab strip instead (it will never be the Firefox View tab,
      // since it's only inserted into the tab strip after it's selected).
@@ -45,7 +46,26 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..ae35daa518ca25f4fc95ef983519c390
        selectedIndex = 1;
        winData.title = tabbrowser.tabs[0].label;
      }
-@@ -6086,8 +6087,23 @@ var SessionStoreInternal = {
+@@ -5538,6 +5540,7 @@ var SessionStoreInternal = {
+         winData.tabs,
+         winData.groups ?? []
+       );
++      aWindow.gZenViewSplitter?.restoreDataFromSessionStore(winData.splitViewData);
+       this._log.debug(
+         `restoreWindow, createTabsForSessionRestore returned ${tabs.length} tabs`
+       );
+@@ -5933,8 +5936,8 @@ var SessionStoreInternal = {
+     let isRemotenessUpdate = options.isRemotenessUpdate;
+ 
+     let willRestoreImmediately =
+-      options.restoreImmediately || tabbrowser.selectedBrowser == browser;
+-
++      options.restoreImmediately || tabbrowser.selectedBrowser == browser
++        || (tabbrowser.selectedTab.group?.id == tab.group?.id);
+     let isBrowserInserted = browser.isConnected;
+ 
+     // Increase the busy state counter before modifying the tab.
+@@ -6086,8 +6089,23 @@ var SessionStoreInternal = {
  
      // Most of tabData has been restored, now continue with restoring
      // attributes that may trigger external events.
