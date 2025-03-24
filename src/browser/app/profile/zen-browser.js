@@ -256,7 +256,7 @@ pref('browser.migrate.opera.enabled', true);
 // pref('network.trr.mode', 5);
 
 // security: They must enable this themselves, to avoid people downloading malware
-pref('xpinstall.signatures.required', false);
+pref('xpinstall.signatures.required', true);
 
 // Experimental Zen Features
 // Strategy to use for bytecode cache (Thanks https://github.com/gunir)
