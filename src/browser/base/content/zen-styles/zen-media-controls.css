@@ -141,7 +141,6 @@
     background-color: var(--zen-media-control-bg);
     backdrop-filter: saturate(3) contrast(2) blur(10px);
     width: 100%;
-    will-change: transform;
   }
 
   .show-on-hover {
