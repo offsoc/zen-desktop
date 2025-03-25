@@ -192,16 +192,6 @@ class ZenMediaController {
     this._currentBrowser = browser;
 
     this.updatePipButton();
-
-    const positionState = mediaController.getPositionState();
-    this.mediaControllersMap.set(mediaController.id, {
-      controller: mediaController,
-      browser,
-      position: positionState.position,
-      duration: positionState.duration,
-      playbackRate: positionState.playbackRate,
-      lastUpdated: Date.now(),
-    });
   }
 
   setupMediaControlUI(metadata, positionState) {
@@ -245,6 +235,7 @@ class ZenMediaController {
       browser,
       position: positionState.position,
       duration: positionState.duration,
+      playbackRate: positionState.playbackRate,
       lastUpdated: Date.now(),
     });
 
