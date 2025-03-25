@@ -245,6 +245,7 @@ class ZenMediaController {
       browser,
       position: positionState.position,
       duration: positionState.duration,
+      playbackRate: positionState.playbackRate,
       lastUpdated: Date.now(),
     });
 
