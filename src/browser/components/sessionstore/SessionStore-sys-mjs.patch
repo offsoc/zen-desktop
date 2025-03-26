@@ -1,5 +1,5 @@
 diff --git a/browser/components/sessionstore/SessionStore.sys.mjs b/browser/components/sessionstore/SessionStore.sys.mjs
-index f814772114948f87cbb3c3a7231c95ea1f68d776..ee358a46956d5f09983fa98a202085bac69c8b27 100644
+index f814772114948f87cbb3c3a7231c95ea1f68d776..38913eb9dee97b42697440560f7a1bab1ffe9f15 100644
 --- a/browser/components/sessionstore/SessionStore.sys.mjs
 +++ b/browser/components/sessionstore/SessionStore.sys.mjs
 @@ -3171,7 +3171,7 @@ var SessionStoreInternal = {
@@ -54,17 +54,6 @@ index f814772114948f87cbb3c3a7231c95ea1f68d776..ee358a46956d5f09983fa98a202085ba
        this._log.debug(
          `restoreWindow, createTabsForSessionRestore returned ${tabs.length} tabs`
        );
-@@ -5933,8 +5936,8 @@ var SessionStoreInternal = {
-     let isRemotenessUpdate = options.isRemotenessUpdate;
- 
-     let willRestoreImmediately =
--      options.restoreImmediately || tabbrowser.selectedBrowser == browser;
--
-+      options.restoreImmediately || tabbrowser.selectedBrowser == browser
-+        || (tabbrowser.selectedTab.group?.id == tab.group?.id);
-     let isBrowserInserted = browser.isConnected;
- 
-     // Increase the busy state counter before modifying the tab.
 @@ -6086,8 +6089,23 @@ var SessionStoreInternal = {
  
      // Most of tabData has been restored, now continue with restoring
