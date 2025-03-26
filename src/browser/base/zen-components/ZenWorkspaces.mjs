@@ -405,6 +405,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
 
   _handleSwipeMayStart(event) {
     if (!this.workspaceEnabled) return;
+    if (event.target.closest('#zen-sidebar-bottom-buttons')) return;
 
     // Only handle horizontal swipes
     if (event.direction === event.DIRECTION_LEFT || event.direction === event.DIRECTION_RIGHT) {
@@ -648,6 +649,7 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
     if (gZenVerticalTabsManager._canReplaceNewTab && showed) {
       BrowserCommands.openTab();
     }
+    gZenViewSplitter.onAfterWorkspaceSessionRestore();
   }
 
   handleInitialTab(tab, isEmpty) {
@@ -2415,6 +2417,17 @@ var ZenWorkspaces = new (class extends ZenMultiWindowFeature {
       const maxWidth = 100 / numButtons;
       parent.style.setProperty('--zen-overflowed-workspace-button-width', `${maxWidth}%`);
       this._processingResize = false;
+
+      // Scroll to the active workspace button if it's not visible
+      const activeButton = parent.querySelector('.zen-workspace-button.active');
+      if (!activeButton) {
+        return;
+      }
+      const parentRect = parent.getBoundingClientRect();
+      const activeRect = activeButton.getBoundingClientRect();
+      if (activeRect.left < parentRect.left || activeRect.right > parentRect.right) {
+        parent.scrollLeft = activeButton.offsetLeft;
+      }
     });
   }
 })();

@@ -130,6 +130,9 @@
     overflow: hidden;
     display: flex;
     gap: 0.5ch;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
   }
 }
 

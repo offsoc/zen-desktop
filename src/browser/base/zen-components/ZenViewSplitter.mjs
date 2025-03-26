@@ -981,7 +981,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       layoutTree: this.calculateLayoutTree(tabs, gridType),
     };
     this._data.push(splitData);
-    window.gBrowser.selectedTab = tabs[0];
+    if (!this._sessionRestoring) {
+      window.gBrowser.selectedTab = tabs[0];
+    }
 
     // Add tabs to the split view group
     let splitGroup = this._getSplitViewGroup(tabs);
@@ -1739,6 +1741,7 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
     if (!data) {
       return;
     }
+    this._sessionRestoring = true;
     // We can just get the tab group with document.getElementById(group.groupId)
     // and add the tabs to it
     for (const group of data) {
@@ -1747,6 +1750,15 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
         const tabs = groupElement.querySelectorAll('tab');
         this.splitTabs([...tabs], group.gridType);
       }
+    }
+    delete this._sessionRestoring;
+  }
+
+  onAfterWorkspaceSessionRestore() {
+    if (this.currentView >= 0) {
+      // Activate all browsers in the split view
+      this.currentView = -1;
+      this.onLocationChange(gBrowser.selectedTab.linkedBrowser);
     }
   }
 }
