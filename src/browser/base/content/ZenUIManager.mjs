@@ -644,8 +644,7 @@ var gZenVerticalTabsManager = {
       } else {
         try {
           gURLBar.zenUpdateLayoutBreakout();
-        } catch (e) {
-        }
+        } catch (e) {}
       }
 
       // Always move the splitter next to the sidebar
