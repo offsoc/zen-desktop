@@ -21,6 +21,8 @@ body:
         - label: I have searched existing issues and avoided creating duplicates.
         - label: I am not filing an enhancement request.
         - label: I have checked that this issue cannot be reproduced on Mozilla Firefox.
+    validations:
+      required: true
   - type: textarea
     id: what-happened
     attributes:
