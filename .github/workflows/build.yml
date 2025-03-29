@@ -385,23 +385,23 @@ jobs:
           set -eux
           export ARCH=${{ matrix.arch }}
           UPINFO="gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|desktop|latest|zen-$ARCH.AppImage.zsync"
-          rm AppDir/.DirIcon || true
-          cp configs/branding/${{ inputs.update_branch }}/logo128.png AppDir/usr/share/icons/hicolor/128x128/apps/zen.png
-          cp configs/branding/${{ inputs.update_branch }}/logo128.png AppDir/zen.png && ln -s zen.png AppDir/.DirIcon
+          rm build/AppDir/.DirIcon || true
+          cp configs/branding/${{ inputs.update_branch }}/logo128.png build/AppDir/usr/share/icons/hicolor/128x128/apps/zen.png
+          cp configs/branding/${{ inputs.update_branch }}/logo128.png build/AppDir/zen.png && ln -s zen.png build/AppDir/.DirIcon
 
           if [ "${{ inputs.update_branch }}" = "twilight" ]; then
-            sed -i -e 's/Name=Zen Browser/Name=Zen Twilight/g' AppDir/zen.desktop
-            sed -i -e 's/StartupWMClass=zen/StartupWMClass=zen-twilight/g' AppDir/zen.desktop
+            sed -i -e 's/Name=Zen Browser/Name=Zen Twilight/g' build/AppDir/zen.desktop
+            sed -i -e 's/StartupWMClass=zen/StartupWMClass=zen-twilight/g' build/AppDir/zen.desktop
           fi
 
-          APPDIR=AppDir
+          APPDIR=build/AppDir
           tar -xvf *.tar.* && rm -rf *.tar.*
           mv zen/* $APPDIR/
           wget "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           wget "https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-squashfs-lite-$ARCH"
           chmod +x *.AppImage
           chmod +x ./uruntime-appimage-squashfs-lite-"$ARCH"
-          chmod +x ./AppDir/AppRun
+          chmod +x ./build/AppDir/AppRun
 
           # keep the uruntime mountpoint (massively speeds up launch time)
           sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime-appimage-squashfs-lite-"$ARCH"
@@ -628,7 +628,7 @@ jobs:
           pwd
           ls .
           ls ..
-          mv releases.xml ./flatpak/app.zen_browser.zen.metainfo.xml
+          mv releases.xml ./build/flatpak/app.zen_browser.zen.metainfo.xml
           # output the version to the file
           echo -n ${{ needs.build-data.outputs.version }} > ./flatpak/version
 
