@@ -60,7 +60,7 @@ body:
     attributes:
       label: What component is this issue related to?
       options:
-        - Sync
+        - Other
         - Compact Mode
         - Workspaces
         - Mods / Themes
@@ -79,7 +79,7 @@ body:
         - Customizable UI / Toolbars
         - Localization
         - Bookmarks
-        - Other
+        - Sync
     validations:
       required: true
 

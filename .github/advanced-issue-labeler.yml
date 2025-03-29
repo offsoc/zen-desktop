@@ -48,17 +48,9 @@ policy:
         block-list: ['Other']
         label:
           # Make sure it's in sync with the dropdown in the issue template
-          - name: 'platform: linux-appimage'
-            keys: ['Linux (AppImage)']
-          - name: 'platform: linux-flatpak'
-            keys: ['Linux (Flatpak)']
-          - name: 'platform: linux-tarball'
-            keys: ['Linux (Tarball)']
-          - name: 'platform: macos-aarch64'
-            keys: ['macOS - aarch64']
-          - name: 'platform: macos-intel'
-            keys: ['macOS - Intel']
-          - name: 'platform: windows-x64'
-            keys: ['Windows - x64']
-          - name: 'platform: windows-aarch64'
-            keys: ['Windows - aarch64']
+          - name: 'platform: linux'
+            keys: ['Linux (AppImage)', 'Linux (Flatpak)', 'Linux (Tarball)']
+          - name: 'platform: macOS'
+            keys: ['macOS - aarch64', 'macOS - Intel']
+          - name: 'platform: windows'
+            keys: ['Windows - x64', 'Windows - aarch64']
