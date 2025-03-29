@@ -23,6 +23,8 @@ policy:
             keys: ['Settings']
           - name: 'component: privacy'
             keys: ['Privacy']
+          - name: 'component: split-view'
+            keys: ['Split View']
           - name: 'component: performance'
             keys: ['Performance']
           - name: 'component: media-controller'
