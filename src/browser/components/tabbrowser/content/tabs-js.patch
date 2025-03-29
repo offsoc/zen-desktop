@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb205812e87 100644
+index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..0f809f610f78f672716b9af66ddf3cfb83c74c10 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -93,7 +93,7 @@
@@ -75,7 +75,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
 -          let tabs = this.ariaFocusableItems.slice(
 -            isPinned ? 0 : numPinned,
 -            isPinned ? numPinned : undefined
-+          let numPinned = gBrowser._numVisiblePinTabs;
++          let numPinned = gBrowser._numVisiblePinTabsWithFolders;
 +          let essential = draggedTab.hasAttribute("zen-essential");
 +          let tabs = this.ariaFocusableItems.filter(tab => !tab.hasAttribute("zen-glance-tab")).slice(
 +            isPinned ? (essential ? 0 : gBrowser._numZenVisibleEssentials) : numPinned,
@@ -393,7 +393,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
 -      let tabs = this.ariaFocusableItems.slice(
 -        isPinned ? 0 : numPinned,
 -        isPinned ? numPinned : undefined
-+      let numPinned = gBrowser._numVisiblePinTabs;
++      let numPinned = gBrowser._numVisiblePinTabsWithFolders;
 +      let essential = draggedTab.hasAttribute("zen-essential");
 +      let tabs = this.ariaFocusableItems.filter(tab => !tab.hasAttribute("zen-glance-tab")).slice(
 +        isPinned ? (essential ? 0 : gBrowser._numZenVisibleEssentials) : numPinned,
@@ -401,7 +401,20 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
        );
  
        if (this.#rtlMode) {
-@@ -2348,7 +2381,11 @@
+@@ -2325,6 +2358,12 @@
+ 
+       // Move the dragged tab based on the mouse position.
+       let firstTab = tabs[0];
++      if (isTabGroupLabel(firstTab)) {
++        const group = firstTab.closest("tab-group");
++        if (group?.hasAttribute("split-view-group")) {
++          firstTab = group;
++        }
++      }
+       let lastTab = tabs.at(-1);
+       let lastMovingTab = movingTabs.at(-1);
+       let firstMovingTab = movingTabs[0];
+@@ -2348,7 +2387,11 @@
        translate = Math.min(Math.max(translate, firstBound), lastBound);
  
        for (let tab of movingTabs) {
@@ -414,7 +427,27 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
        }
  
        dragData.translatePos = translate;
-@@ -2639,7 +2676,7 @@
+@@ -2507,6 +2550,10 @@
+       if (!dropElement) {
+         dropElement = this.ariaFocusableItems[oldDropElementIndex];
+       }
++      if (dropElement?.group?.hasAttribute("split-view-group")) {
++        // We focus the group label element, not the group itself.
++        dropElement = dropElement.group.querySelector(".tab-group-label");
++      }
+       let newDropElementIndex = dropElement
+         ? dropElement.elementIndex
+         : oldDropElementIndex;
+@@ -2566,7 +2613,7 @@
+         }
+       }
+ 
+-      if (gBrowser._tabGroupsEnabled && !isPinned) {
++      if (false) {
+         let dragOverGroupingThreshold = 1 - moveOverThreshold;
+ 
+         // When dragging tab(s) over an ungrouped tab, signal to the user
+@@ -2639,7 +2686,7 @@
        // Shift background tabs to leave a gap where the dragged tab
        // would currently be dropped.
        for (let item of tabs) {
@@ -423,7 +456,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
            continue;
          }
  
-@@ -2649,7 +2686,11 @@
+@@ -2649,7 +2696,11 @@
            // Shift the `.tab-group-label-container` to shift the label element.
            item = item.parentElement;
          }
@@ -435,7 +468,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
        }
      }
  
-@@ -2697,8 +2738,9 @@
+@@ -2697,8 +2748,9 @@
        );
      }
  
@@ -447,7 +480,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
          return;
        }
  
-@@ -2711,6 +2753,7 @@
+@@ -2711,6 +2763,7 @@
            item = item.parentElement;
          }
          item.style.transform = "";
@@ -455,7 +488,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
          item.removeAttribute("dragover-createGroup");
        }
        this.removeAttribute("movingtab-createGroup");
-@@ -2754,7 +2797,7 @@
+@@ -2754,7 +2807,7 @@
          let postTransitionCleanup = () => {
            movingTab._moveTogetherSelectedTabsData.animate = false;
          };
@@ -464,7 +497,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..8cf754f94ffe6949268c6cb893bdbbb2
            postTransitionCleanup();
          } else {
            let onTransitionEnd = transitionendEvent => {
-@@ -2924,7 +2967,7 @@
+@@ -2924,7 +2977,7 @@
      }
  
      _notifyBackgroundTab(aTab) {
