@@ -20,6 +20,7 @@ body:
         - label: I have read the instructions.
         - label: I have searched existing issues and avoided creating duplicates.
         - label: I am not filing an enhancement request.
+        - label: I have checked that this issue cannot be reproduced on Mozilla Firefox.
   - type: textarea
     id: what-happened
     attributes:
@@ -28,19 +29,12 @@ body:
       placeholder: Tell us what you see!
     validations:
       required: true
-  - type: checkboxes
-    id: firefox
-    attributes:
-      label: Reproducible?
-      description: Is this issue reproducible on Firefox?
-      options:
-        - label: I have checked that this issue cannot be reproduced on Mozilla Firefox.
   - type: input
     id: version
     attributes:
       label: Version
       description: What version of our software are you running? Please do not use "latest" or "newest" as version numbers. Go to `Help -> About Zen` to find the version number.
-      placeholder: 1.0.0
+      placeholder: 1.0.0b
     validations:
       required: true
   - type: dropdown
@@ -54,10 +48,39 @@ body:
         - Linux (Tarball)
         - macOS - aarch64
         - macOS - Intel
-        - Windows
+        - Windows - x64
+        - Windows - aarch64
         - Other
     validations:
       required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: What component is this issue related to?
+      options:
+        - Sync
+        - Compact Mode
+        - Workspaces
+        - Mods / Themes
+        - Glance
+        - URL Bar
+        - Tabs
+        - Settings
+        - Privacy
+        - Performance
+        - Media Controler
+        - Tab unloading
+        - Tab Folders
+        - Keyboard Shortcuts
+        - Security
+        - Extensions
+        - Customizable UI / Toolbars
+        - Localization
+        - Bookmarks
+        - Other
+    validations:
+      required: true
+
   - type: textarea
     id: logs
     attributes:
