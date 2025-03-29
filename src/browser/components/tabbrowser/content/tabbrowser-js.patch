@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabbrowser.js b/browser/components/tabbrowser/content/tabbrowser.js
-index 5f406ea5d09273c9b70b84eee24c6267f88692f8..25076e5fdbe5a60cc0f35640652ba8525a55b093 100644
+index 5f406ea5d09273c9b70b84eee24c6267f88692f8..82926278b2f71b8251b06bde6f62bcdc885cb760 100644
 --- a/browser/components/tabbrowser/content/tabbrowser.js
 +++ b/browser/components/tabbrowser/content/tabbrowser.js
 @@ -424,11 +424,67 @@
@@ -22,7 +22,7 @@ index 5f406ea5d09273c9b70b84eee24c6267f88692f8..25076e5fdbe5a60cc0f35640652ba852
 +    get _numVisiblePinTabsWithoutCollapsed() {
 +      let i = 0;
 +      for (let item of this.tabContainer.ariaFocusableItems) {
-+        if (!!item?.classList?.contains("tab-group-label")) {
++        if (!!item?.classList?.contains("tab-group-label") && item.closest("tab-group").pinned) {
 +          i += 1;
 +          continue;
 +        }

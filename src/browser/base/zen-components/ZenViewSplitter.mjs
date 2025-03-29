@@ -225,6 +225,9 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
       this._hasAnimated = true;
       for (const tab of gBrowser.tabs) {
         tab.style.removeProperty('transform');
+        if (tab.group) {
+          tab.group.style.removeProperty('transform');
+        }
       }
       // Add a min width to all the browser elements to prevent them from resizing
       for (const browser of gBrowser.browsers) {
@@ -997,6 +1000,10 @@ class ZenViewSplitter extends ZenDOMOperatedFeature {
           gBrowser.moveTabToGroup(tab, splitGroup);
         }
       }
+    }
+
+    if (this._sessionRestoring) {
+      return;
     }
     this.activateSplitView(splitData);
   }

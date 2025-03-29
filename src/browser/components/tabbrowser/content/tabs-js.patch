@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551c7f833f9 100644
+index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..bf956639f7d17d6d652f3b2d6cb174904b5b5da9 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -93,7 +93,7 @@
@@ -448,7 +448,17 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
          ) {
            return this.#rtlMode ? -shiftSize : shiftSize;
          }
-@@ -2507,6 +2553,10 @@
+@@ -2485,6 +2531,9 @@
+             break;
+           }
+           let element = tabs[mid];
++          if (element?.group?.hasAttribute("split-view-group")) {
++            element = element.group.labelElement;
++          }
+           let elementForSize = isTabGroupLabel(element)
+             ? element.parentElement
+             : element;
+@@ -2507,6 +2556,10 @@
        if (!dropElement) {
          dropElement = this.ariaFocusableItems[oldDropElementIndex];
        }
@@ -459,7 +469,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
        let newDropElementIndex = dropElement
          ? dropElement.elementIndex
          : oldDropElementIndex;
-@@ -2566,12 +2616,12 @@
+@@ -2566,12 +2619,12 @@
          }
        }
  
@@ -474,7 +484,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
            dropElement != draggedTab &&
            isTab(dropElement) &&
            !dropElement?.group &&
-@@ -2639,7 +2689,7 @@
+@@ -2639,7 +2692,7 @@
        // Shift background tabs to leave a gap where the dragged tab
        // would currently be dropped.
        for (let item of tabs) {
@@ -483,7 +493,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
            continue;
          }
  
-@@ -2648,8 +2698,15 @@
+@@ -2648,6 +2701,9 @@
          if (isTabGroupLabel(item)) {
            // Shift the `.tab-group-label-container` to shift the label element.
            item = item.parentElement;
@@ -491,15 +501,9 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
 +            item = item.parentElement;
 +          }
          }
-+        if (item.group?.hasAttribute("split-view-group")) {
-+          item.group.style.transform = transform;
-+        } else {
          item.style.transform = transform;
-+        }
        }
-     }
- 
-@@ -2697,8 +2754,9 @@
+@@ -2697,8 +2753,9 @@
        );
      }
  
@@ -511,7 +515,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
          return;
        }
  
-@@ -2711,6 +2769,12 @@
+@@ -2711,6 +2768,12 @@
            item = item.parentElement;
          }
          item.style.transform = "";
@@ -524,7 +528,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
          item.removeAttribute("dragover-createGroup");
        }
        this.removeAttribute("movingtab-createGroup");
-@@ -2754,7 +2818,7 @@
+@@ -2754,7 +2817,7 @@
          let postTransitionCleanup = () => {
            movingTab._moveTogetherSelectedTabsData.animate = false;
          };
@@ -533,7 +537,7 @@ index 0fbdbf3aefc467880e6b0bae2615cb145735cb0f..40593b305688d24a0b702714a91af551
            postTransitionCleanup();
          } else {
            let onTransitionEnd = transitionendEvent => {
-@@ -2924,7 +2988,7 @@
+@@ -2924,7 +2987,7 @@
      }
  
      _notifyBackgroundTab(aTab) {
